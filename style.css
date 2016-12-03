@@ -1,0 +1,35 @@
+body {
+  background-color: white
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #eee;
+  border-radius: 5px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container > .line {
+  margin-bottom: 24px;
+}
+
+.income {
+  border: 1px solid grey;
+  padding: 5px;
+  transition: border-color ease-in-out 0.05s, box-shadow ease-in-out 0.05s;
+}
+
+.income:focus {
+  border: 1px solid #007fff;
+  outline: 0;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+}
