@@ -1,5 +1,5 @@
 body {
-  background-color: white
+  background-size: 100%;
 }
 
 .container {
@@ -73,6 +73,8 @@ body {
 }
 
 .ticket-price {
+  color: #706A5B;
+  font-family: "Courier";
   position: absolute;
   left: 37%;
   top: 60%;
