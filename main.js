@@ -1,35 +1,43 @@
 var PRICE_BUCKETS = [
   {
     income: 20000,
-    percent: 0.01,
+    percent: 0.03,
+    background: "img/bg/0.tif",
   },
   {
     income: 35000,
     percent: 0.02,
+    background: "img/bg/1.tif",
   },
   {
     income: 60000,
     percent: 0.03,
+    background: "img/bg/2.tif",
   },
   {
     income: 100000,
     percent: 0.05,
+    background: "img/bg/3.tif",
   },
   {
     income: 180000,
     percent: 0.07,
+    background: "img/bg/4.tif",
   },
   {
     income: 270000,
     percent: 0.1,
+    background: "img/bg/5.tif",
   },
   {
     income: 500000,
     percent: 0.5,
+    background: "img/bg/6.tif",
   },
   {
     income: 1000000,
     percent: 1,
+    background: "img/bg/7.tif",
   },
 ];
 
