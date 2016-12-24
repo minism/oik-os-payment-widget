@@ -59,6 +59,8 @@ for (var i = 0; i < BUCKETS.length; i++) {
   bucket.audioLoop.volume = 0;
   bucket.audioLoop.play();
 }
+var BUCKET_UP_AUDIO = new Audio('snd/bracket_up.mp3');
+var BUCKET_DOWN_AUDIO = new Audio('snd/bracket_down.mp3');
 
 
 // The currently active bucket, if any.
@@ -96,23 +98,33 @@ $(function() {
   };
 
   var setBucketActive = function(bucket) {
+    var incomeIncreased = true;
     if (activeBucket) {
       activeBucket.audioLoop.volume = 0;
     }
     if (bucket) {
+      if (activeBucket) {
+        incomeIncreased = bucket.income >= activeBucket.income;
+      }
       bucket.audioLoop.volume = 1;
       body.css('background-image', "url(" + bucket.background + ")"); 
     } else {
+      incomeIncreased = false;
       body.css('background-image', "");
     }
     activeBucket = bucket;
+
+    var bucketChangeAudio = incomeIncreased ? BUCKET_UP_AUDIO : BUCKET_DOWN_AUDIO;
+    bucketChangeAudio.play();
   };
 
   income.keyup(function(event) {
     var income = parseInt(event.target.value);
     income = isNaN(income) ? 0 : income;
     var bucket = getBucketForIncome(income);
-    setBucketActive(bucket);
+    if (bucket != activeBucket) {
+      setBucketActive(bucket);
+    }
     var price = getAdjustedPrice(income, bucket);
     displayPrice(price);
   });
