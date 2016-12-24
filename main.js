@@ -1,7 +1,7 @@
 var PRICE_BUCKETS = [
   {
     income: 20000,
-    percent: 0.03,
+    percent: 0.01,
     background: "img/bg/0.tif",
   },
   {
