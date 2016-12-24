@@ -109,8 +109,8 @@ $(function() {
   };
 
   income.keyup(function(event) {
-    // TODO: Add error handling to non-numerical input.
     var income = parseInt(event.target.value);
+    income = isNaN(income) ? 0 : income;
     var bucket = getBucketForIncome(income);
     setBucketActive(bucket);
     var price = getAdjustedPrice(income, bucket);
