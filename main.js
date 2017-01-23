@@ -49,6 +49,9 @@ var BUCKETS = [
   },
 ];
 
+var CURVE_COEFFICIENT = 100;
+var CURVE_BASE = 1.1;
+
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 
@@ -78,8 +81,9 @@ var numMembers = 1;
 $(function() {
   // Assign element references.
   var input = $('.income');
-  var price = $('.price');
-  var ticketPrice = $('.ticket-price');
+  var priceLabel = $('.price');
+  var incomeLabel = $('.income-label');
+  var ticketPriceLabel = $('.ticket-price');
   var membersContainer = $('.members-container');
   var membersDec = $('.members-dec');
   var membersInc = $('.members-inc');
@@ -87,6 +91,18 @@ $(function() {
 
 
   // Control functions.
+  var floorTo = function(value, resolution) {
+    return Math.floor(value / resolution) * resolution;
+  };
+
+  var sliderToIncome = function(sliderVal) {
+    if (sliderVal <= 50) {
+      return 0;
+    }
+    var absIncome = Math.pow(CURVE_BASE, sliderVal) * CURVE_COEFFICIENT - 1;
+    return floorTo(absIncome, 1000);
+  };
+
   var getBucketForIncome = function(income) {
     targetBucket = null;
     for (var i = 0; i < BUCKETS.length; i++) {
@@ -106,9 +122,10 @@ $(function() {
     return Math.round(income * bucket.percent) / 100.0;
   };
 
-  var displayPrice = function(amount) {
-    price.text('$' + amount);
-    ticketPrice.text('$' + amount);
+  var updateDisplay = function(income, price) {
+    priceLabel.text('$' + price);
+    ticketPriceLabel.text('$' + price);
+    incomeLabel.text('$' + income);
   };
 
   var setBucketActive = function(bucket) {
@@ -146,20 +163,19 @@ $(function() {
   }
 
   var updateIncome = function() {
-    var income = input.val();
-    income = isNaN(income) ? 0 : income;
+    var income = sliderToIncome(input.val());
     income = Math.floor(income / numMembers);
     var bucket = getBucketForIncome(income);
     if (bucket != activeBucket) {
       setBucketActive(bucket);
     }
     var price = getAdjustedPrice(income, bucket);
-    displayPrice(price);
+    updateDisplay(income, price);
   }
 
 
   // Setup events.
-  input.keyup(function(event) { updateIncome() });
+  input.on('input', function(event) { updateIncome(); });
   membersDec.click(function(event) { adjustMembers(-1) });
   membersInc.click(function(event) { adjustMembers(1) });
 });

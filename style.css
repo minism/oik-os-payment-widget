@@ -22,19 +22,16 @@ body {
 }
 
 .income {
-  border: 1px solid grey;
-  padding: 5px;
-  transition: border-color ease-in-out 0.05s, box-shadow ease-in-out 0.05s;
-}
-
-.income:focus {
-  border: 1px solid #007fff;
-  outline: 0;
-  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+  width: 300px;
 }
 
 .price {
-  font-size: 24px;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.income-label {
+  font-size: 36px;
   font-weight: bold;
 }
 
