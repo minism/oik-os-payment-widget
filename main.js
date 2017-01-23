@@ -49,6 +49,11 @@ var BUCKETS = [
   },
 ];
 
+var MIN_MEMBERS = 1;
+var MAX_MEMBERS = 8;
+
+var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
+
 
 // Pre-process all audio and attach elements to the buckets.
 var audioLoops = [];
@@ -66,13 +71,22 @@ var BUCKET_DOWN_AUDIO = new Audio('snd/bracket_down.mp3');
 // The currently active bucket, if any.
 var activeBucket = null;
 
+// The number of household members.
+var numMembers = 1;
+
 
 $(function() {
-  var income = $('.income');
+  // Assign element references.
+  var input = $('.income');
   var price = $('.price');
   var ticketPrice = $('.ticket-price');
+  var membersContainer = $('.members-container');
+  var membersDec = $('.members-dec');
+  var membersInc = $('.members-inc');
   var body = $('body');
 
+
+  // Control functions.
   var getBucketForIncome = function(income) {
     targetBucket = null;
     for (var i = 0; i < BUCKETS.length; i++) {
@@ -118,14 +132,34 @@ $(function() {
     bucketChangeAudio.play();
   };
 
-  income.keyup(function(event) {
-    var income = parseInt(event.target.value);
+  var adjustMembers = function(delta) {
+    var newMembers = numMembers + delta;
+    if (newMembers < MIN_MEMBERS || newMembers > MAX_MEMBERS) {
+      return;
+    }
+    numMembers = newMembers;
+    membersContainer.empty();
+    for (var i = 0; i < numMembers; i++) {
+      membersContainer.append($(MEMBER_IMAGE_HTML));
+    }
+    updateIncome();
+  }
+
+  var updateIncome = function() {
+    var income = input.val();
     income = isNaN(income) ? 0 : income;
+    income = Math.floor(income / numMembers);
     var bucket = getBucketForIncome(income);
     if (bucket != activeBucket) {
       setBucketActive(bucket);
     }
     var price = getAdjustedPrice(income, bucket);
     displayPrice(price);
-  });
+  }
+
+
+  // Setup events.
+  input.keyup(function(event) { updateIncome() });
+  membersDec.click(function(event) { adjustMembers(-1) });
+  membersInc.click(function(event) { adjustMembers(1) });
 });
