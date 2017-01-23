@@ -163,14 +163,14 @@ $(function() {
   }
 
   var updateIncome = function() {
-    var income = sliderToIncome(input.val());
-    income = Math.floor(income / numMembers);
+    var rawIncome = sliderToIncome(input.val());
+    income = Math.floor(rawIncome / numMembers);
     var bucket = getBucketForIncome(income);
     if (bucket != activeBucket) {
       setBucketActive(bucket);
     }
     var price = getAdjustedPrice(income, bucket);
-    updateDisplay(income, price);
+    updateDisplay(rawIncome, price);
   }
 
 
