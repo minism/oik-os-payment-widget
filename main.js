@@ -84,6 +84,12 @@ var numMembers = 1;
 
 
 $(function() {
+  // Preload images immediately.
+  for (var i = 0; i < BUCKETS.length; i++) {
+    var image = new Image();
+    image.src = BUCKETS[i].background;
+  }
+
   // Assign element references.
   var input = $('.income');
   var priceLabel = $('.price');
@@ -93,7 +99,6 @@ $(function() {
   var membersDec = $('.members-dec');
   var membersInc = $('.members-inc');
   var body = $('body');
-
 
   // Util functions.
   var floorTo = function(value, resolution) {
@@ -186,7 +191,6 @@ $(function() {
     var price = getAdjustedPrice(income, bucket);
     updateDisplay(rawIncome, price);
   }
-
 
   // Setup events.
   input.on('input', function(event) { updateIncome(); });
