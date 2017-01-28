@@ -49,8 +49,13 @@ var BUCKETS = [
   },
 ];
 
+var INITIAL_INCOME_SLIDER = 66;
+
 var CURVE_COEFFICIENT = 100;
 var CURVE_BASE = 1.1;
+
+var MIN_INCOME = 0;
+var MAX_INCOME = 1400000;
 
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
@@ -90,14 +95,21 @@ $(function() {
   var body = $('body');
 
 
-  // Control functions.
+  // Util functions.
   var floorTo = function(value, resolution) {
     return Math.floor(value / resolution) * resolution;
   };
 
+  var addCommas = function(value) {
+    return value.toLocaleString();
+  }
+
+  // Control functions.
   var sliderToIncome = function(sliderVal) {
     if (sliderVal <= 50) {
-      return 0;
+      return MIN_INCOME;
+    } else if (sliderVal >= 100) {
+      return MAX_INCOME;
     }
     var absIncome = Math.pow(CURVE_BASE, sliderVal) * CURVE_COEFFICIENT - 1;
     return floorTo(absIncome, 1000);
@@ -123,9 +135,9 @@ $(function() {
   };
 
   var updateDisplay = function(income, price) {
-    priceLabel.text('$' + price);
     ticketPriceLabel.text('$' + price);
-    incomeLabel.text('$' + income);
+    priceLabel.text('$' + addCommas(price));
+    incomeLabel.text('$' + addCommas(income));
   };
 
   var setBucketActive = function(bucket) {
@@ -178,4 +190,8 @@ $(function() {
   input.on('input', function(event) { updateIncome(); });
   membersDec.click(function(event) { adjustMembers(-1) });
   membersInc.click(function(event) { adjustMembers(1) });
+
+  // Set initial slider value
+  input.val(INITIAL_INCOME_SLIDER);
+  updateIncome();
 });
