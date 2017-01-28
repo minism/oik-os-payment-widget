@@ -102,6 +102,8 @@ $(function() {
   var membersInc = $('.members-inc');
   var bubbleLeft = $('.bubble-left');
   var bubbleRight = $('.bubble-right');
+  var household = $('.household');
+  var oikos = $('.oikos');
   var body = $('body');
 
   // Basic app "model"
@@ -186,7 +188,7 @@ $(function() {
       membersContainer.append($(MEMBER_IMAGE_HTML));
     }
     updateIncome();
-  }
+  };
 
   var updateIncome = function() {
     var rawIncome = sliderToIncome(input.val());
@@ -197,7 +199,7 @@ $(function() {
     }
     var price = getAdjustedPrice(income, bucket);
     updateDisplay(rawIncome, price);
-  }
+  };
 
   var updateConversation = function() {
     bubbleLeftActive = !bubbleLeftActive;
@@ -208,12 +210,24 @@ $(function() {
       bubbleLeft.css('opacity', 0);
       bubbleRight.css('opacity', 1);
     }
-  }
+  };
+
+  var handleHouseholdIn = function(event) {
+    event.target.innerText = 'ο ἶ κ ο ς';
+    event.target.className = 'household oikos';
+  };
+
+  var handleHouseholdOut = function(event) {
+    event.target.innerText = 'household';
+    event.target.className = 'household';
+  };
 
   // Setup events.
   input.on('input', function(event) { updateIncome(); });
   membersDec.click(function(event) { adjustMembers(-1) });
   membersInc.click(function(event) { adjustMembers(1) });
+  household.mouseenter(handleHouseholdIn);
+  household.mouseout(handleHouseholdOut);
   setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
 
   // Set initial slider value

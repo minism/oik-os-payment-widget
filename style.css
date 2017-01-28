@@ -120,3 +120,21 @@ body {
 .bubble-left {
   opacity: 0;
 }
+
+.household-container {
+  position: relative;
+}
+
+.household {
+  display: inline;
+  position: absolute;
+}
+
+.household-after {
+  margin-left: 4.4em;
+}
+
+.oikos {
+  font-weight: bold;
+  font-size: 23px;
+}
