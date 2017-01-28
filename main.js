@@ -60,6 +60,8 @@ var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 
+var CONVERSATION_BUBBLE_INTERVAL = 4000;
+
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 
 
@@ -98,7 +100,12 @@ $(function() {
   var membersContainer = $('.members-container');
   var membersDec = $('.members-dec');
   var membersInc = $('.members-inc');
+  var bubbleLeft = $('.bubble-left');
+  var bubbleRight = $('.bubble-right');
   var body = $('body');
+
+  // Basic app "model"
+  var bubbleLeftActive = false;
 
   // Util functions.
   var floorTo = function(value, resolution) {
@@ -192,10 +199,22 @@ $(function() {
     updateDisplay(rawIncome, price);
   }
 
+  var updateConversation = function() {
+    bubbleLeftActive = !bubbleLeftActive;
+    if (bubbleLeftActive) {
+      bubbleLeft.css('opacity', 1);
+      bubbleRight.css('opacity', 0);
+    } else {
+      bubbleLeft.css('opacity', 0);
+      bubbleRight.css('opacity', 1);
+    }
+  }
+
   // Setup events.
   input.on('input', function(event) { updateIncome(); });
   membersDec.click(function(event) { adjustMembers(-1) });
   membersInc.click(function(event) { adjustMembers(1) });
+  setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
 
   // Set initial slider value
   input.val(INITIAL_INCOME_SLIDER);
