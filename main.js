@@ -150,10 +150,12 @@ $(function() {
         incomeIncreased = bucket.income >= activeBucket.income;
       }
       bucket.audioLoop.volume = 1;
+      body.css('background-color', 'black');
       body.css('background-image', "url(" + bucket.background + ")"); 
     } else {
       incomeIncreased = false;
-      body.css('background-image', "");
+      body.css('background-color', 'white');
+      body.css('background-image', '');
     }
     activeBucket = bucket;
 
