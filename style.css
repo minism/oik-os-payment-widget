@@ -3,7 +3,24 @@ body {
   font-size: 20px;
 }
 
+.main {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.horiz-container {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  border: 1px solid red;
+  padding: 1px;
+}
+
 .container {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -11,10 +28,11 @@ body {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  border-radius: 5px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  border: 1px solid blue;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .container > .line {
@@ -35,39 +53,17 @@ body {
   font-weight: bold;
 }
 
-.download-container {
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: space-between;
-  -ms-justify-content: space-between;
-  justify-content: space-between;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.download {
-  -webkit-flex: none;
-  -ms-flex: none;
-  flex: none;
-  margin-right: 30px;
-  font-size: 18px;
-  text-decoration: none;
-}
-
 .ticket-container {
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
   position: relative;
   -ms-transform: rotate(-10deg);
   -webkit-transform: rotate(-10deg);
   transform: rotate(-10deg);
+  text-align: center;
+  margin-bottom: 50px;
 }
 
 .ticket-container > img {
-  max-width: 100%;
+  max-width: 80%;
 }
 
 .ticket-price {
@@ -101,13 +97,15 @@ body {
 }
 
 .conversation-container {
-  height: 480px;
-  width: 864px;
+  background: green;
+  height: 300px;
+  width: 500px;
   position: relative;
 }
 
 .conversation-image {
   position: absolute;
+  width: 100%;
   -webkit-transition: opacity 0.75s ease-out;
   -moz-transition: opacity 0.75s ease-out;
   transition: opacity 0.75s ease-out;
@@ -137,4 +135,14 @@ body {
 .oikos {
   font-weight: bold;
   font-size: 23px;
+}
+
+.title-image {
+  height: 200px;
+}
+
+.windmill {
+  width: 100px;
+  height: 200px;
+  background: blue;
 }

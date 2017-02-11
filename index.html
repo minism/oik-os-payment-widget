@@ -12,30 +12,49 @@
   <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
   <script src="main.js"></script>
 
-  <div class="container">
-    <div class="conversation-container line">
-      <img class="conversation-image bubble-left" src="img/money-tree-left.png">
-      <img class="conversation-image bubble-right" src="img/money-tree-right.png">
-      <img class="conversation-image" src="img/money-tree-bottom.png">
-    </div>
-    <div class="household-container line">To buy a download ticket </br> to <i>Oikospiel Book I</i>, for Mac & PC </br></br> Please enter your estimated annual <span class="household">household</span><span class="household-after">income:</span></div>
-    <input type="range" class="income line" step="any" value=0 min=50 max=100>
-    <div class="line income-label">$0</div>
-    <div class="line">and the number of members in your <span class="household">household</span>:</div>
-    <div class="members line">
-      <button class="num-members-button members-dec">- </button>
-      <button class="num-members-button members-inc">+</button>
-      <div class="members-container">
-        <img src="img/dogface.png">
+  <div class="main horiz-container">
+    <div class="container">
+      <div class="conversation-container line">
+        <img class="conversation-image bubble-left" src="img/money-tree-left.png">
+        <img class="conversation-image bubble-right" src="img/money-tree-right.png">
+        <img class="conversation-image" src="img/money-tree-bottom.png">
+      </div>
+      <img class="title-image" src="img/title-header.png">
+      <div class="horiz-container full-width">
+        <div class="container">
+          <div class="windmill"></div>
+          <div>joules =</div>
+        </div>
+        <div class="container">
+          <div class="windmill"></div>
+          <div>$$ =</div>
+        </div>
       </div>
     </div>
-    <div class="line"></div>
-    <div class="download-container">
-      <a href="#" class="download">DOWNLOAD NOW</a>
+
+    <div class="container">
+      <div class="line"></div>
       <div class="ticket-container">
         <img src="img/ticket.jpg" class="line">
         <div class="ticket-price">$0</div>
       </div>
+      <div class="household-container line">To buy a download ticket </br> to <i>Oikospiel Book I</i>, for Mac & PC </br></br> Please enter your estimated annual <span class="household">household</span><span class="household-after">income:</span></div>
+      <input type="range" class="income line" step="any" value=0 min=50 max=100>
+      <div class="line income-label">$0</div>
+      <div class="line">and the number of members in your <span class="household">household</span>:</div>
+      <div class="members line">
+        <button class="num-members-button members-dec">- </button>
+        <button class="num-members-button members-inc">+</button>
+        <div class="members-container">
+          <img src="img/dogface.png">
+        </div>
+      </div>
+      <div>This income information will not be saved.</div>
+      <div>Buy now</div>
+      <div>Donate</div>
+      <div>The oikospielen opera</div>
+      <div>Emeryville North Arctic Seastead</div>
+      <div>Neo lib / Dream machines</div>
     </div>
   </div>
 </body>
