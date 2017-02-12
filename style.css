@@ -13,8 +13,6 @@ body {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-  border: 1px solid red;
-  padding: 1px;
 }
 
 .container {
@@ -28,7 +26,6 @@ body {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  border: 1px solid blue;
 }
 
 .full-width {
@@ -105,7 +102,6 @@ body {
 }
 
 .conversation-container {
-  background: green;
   height: 300px;
   width: 500px;
   position: relative;
