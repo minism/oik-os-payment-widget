@@ -105,9 +105,12 @@ $(function() {
   var household = $('.household');
   var oikos = $('.oikos');
   var body = $('body');
+  var rotor = $('.wind-turbine-rotor');
 
   // Basic app "model"
   var bubbleLeftActive = false;
+  var turbineVelocity = 0.5;
+  var turbineOrientation = 0;
 
   // Util functions.
   var floorTo = function(value, resolution) {
@@ -222,6 +225,17 @@ $(function() {
     event.target.className = 'household';
   };
 
+  // Per-frame rendering
+  var render = function() {
+    turbineOrientation = (turbineOrientation + turbineVelocity) % 360;
+    var rotateCss = 'rotate(' + turbineOrientation + 'deg)';
+    rotor.css('-ms-transform', rotateCss);
+    rotor.css('-webkit-transform', rotateCss);
+    rotor.css('transform', rotateCss);
+
+    window.requestAnimationFrame(render);
+  }
+
   // Setup events.
   input.on('input', function(event) { updateIncome(); });
   membersDec.click(function(event) { adjustMembers(-1) });
@@ -233,4 +247,6 @@ $(function() {
   // Set initial slider value
   input.val(INITIAL_INCOME_SLIDER);
   updateIncome();
+
+  window.requestAnimationFrame(render);
 });
