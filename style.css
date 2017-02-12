@@ -4,7 +4,7 @@ body {
 }
 
 .main {
-  max-width: 1000px;
+  width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -55,25 +55,33 @@ body {
 
 .ticket-container {
   position: relative;
-  -ms-transform: rotate(-10deg);
-  -webkit-transform: rotate(-10deg);
-  transform: rotate(-10deg);
+  -ms-transform: rotate(-8deg);
+  -webkit-transform: rotate(-8deg);
+  transform: rotate(-8deg);
   text-align: center;
   margin-bottom: 50px;
 }
 
 .ticket-container > img {
-  max-width: 80%;
+  max-width: 90%;
 }
 
 .ticket-price {
   color: #706A5B;
   font-family: "Courier";
   position: absolute;
-  left: 37%;
-  top: 60%;
+  left: 39%;
+  top: 59%;
   font-size: 12px;
   z-index: 1;
+}
+
+.ticket-price-large {
+  left: 73%;
+  top: 50%;
+  font-size: 22px;
+  color: black;
+  font-weight: bold;
 }
 
 .members button {
