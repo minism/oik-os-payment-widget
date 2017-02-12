@@ -146,3 +146,7 @@ body {
   height: 200px;
   background: blue;
 }
+
+.buy-link {
+  height: 30px;
+}
