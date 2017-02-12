@@ -151,6 +151,28 @@ body {
   background: blue;
 }
 
+.wind-turbine {
+  margin-top: 50px;
+  height: 200px;
+  width: 100px;
+  background-image: url('img/wind-pole.png');
+  background-size: 100px 200px;
+  position: relative;
+}
+
+.wind-turbine-rotor {
+  position: absolute;
+  height: 125px;
+  width: 125px;
+  top: -40px;
+  left: -10px;
+  background-image: url('img/wind-rotor.png');
+  background-size: 125px 125px;
+  -ms-transform: rotate(-50deg);
+  -webkit-transform: rotate(-50deg);
+  transform: rotate(-50deg);
+}
+
 .buy-link {
   height: 30px;
 }
