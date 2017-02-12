@@ -168,9 +168,6 @@ body {
   left: -10px;
   background-image: url('img/wind-rotor.png');
   background-size: 125px 125px;
-  -ms-transform: rotate(-50deg);
-  -webkit-transform: rotate(-50deg);
-  transform: rotate(-50deg);
 }
 
 .buy-link {
