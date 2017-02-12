@@ -249,7 +249,7 @@ $(function() {
     rotor.css('-webkit-transform', rotateCss);
     rotor.css('transform', rotateCss);
 
-    joules.text(floorTo(joulesGenerated, 1));
+    joules.text(floorTo(turbineVelocity, 1));
 
     window.requestAnimationFrame(render);
   }
