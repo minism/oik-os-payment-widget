@@ -84,10 +84,6 @@ var BUCKET_DOWN_AUDIO = new Audio('snd/bracket_down.mp3');
 // The currently active bucket, if any.
 var activeBucket = null;
 
-// The number of household members.
-var numMembers = 1;
-
-
 $(function() {
   // Preload images immediately.
   for (var i = 0; i < BUCKETS.length; i++) {
@@ -112,6 +108,7 @@ $(function() {
   var joules = $('.joules');
 
   // Basic app "model"
+  var numMembers = 1;
   var bubbleLeftActive = false;
   var turbineVelocity = 0;
   var turbineOrientation = 0;
@@ -155,7 +152,7 @@ $(function() {
     if (!bucket) {
       return 0;
     }
-    return Math.round(income * bucket.percent) / 100.0;
+    return Math.round(income * bucket.percent / numMembers) / 100.0;
   };
 
   var updateDisplay = function(income, price) {
@@ -202,7 +199,7 @@ $(function() {
 
   var updateIncome = function() {
     var rawIncome = sliderToIncome(input.val());
-    income = Math.floor(rawIncome / numMembers);
+    income = Math.floor(rawIncome);
     var bucket = getBucketForIncome(income);
     if (bucket != activeBucket) {
       setBucketActive(bucket);
