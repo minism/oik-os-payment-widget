@@ -173,3 +173,10 @@ body {
 .buy-link {
   height: 30px;
 }
+
+.rabbit {
+  width: 75px;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
