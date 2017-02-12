@@ -60,6 +60,9 @@ var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 
+var TURBINE_DAMPENING = 200.0;
+var TURBINE_FALLOFF = 0.98;
+
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
@@ -106,11 +109,15 @@ $(function() {
   var oikos = $('.oikos');
   var body = $('body');
   var rotor = $('.wind-turbine-rotor');
+  var joules = $('.joules');
 
   // Basic app "model"
   var bubbleLeftActive = false;
-  var turbineVelocity = 0.5;
+  var turbineVelocity = 0;
   var turbineOrientation = 0;
+  var prevMouseX = null;
+  var prevMouseY = null;
+  var joulesGenerated = 0;
 
   // Util functions.
   var floorTo = function(value, resolution) {
@@ -225,13 +232,27 @@ $(function() {
     event.target.className = 'household';
   };
 
+  var handleBodyMouseMove = function(event) {
+    if (prevMouseY && prevMouseX) {
+      var dx = Math.abs(prevMouseX - event.clientX);
+      var dy = Math.abs(prevMouseY - event.clientY);
+      turbineVelocity += (dx + dy) / TURBINE_DAMPENING;
+    }
+    prevMouseX = event.clientX;
+    prevMouseY = event.clientY;
+  };
+
   // Per-frame rendering
   var render = function() {
+    turbineVelocity = turbineVelocity * TURBINE_FALLOFF;
+    joulesGenerated += turbineVelocity / 100;
     turbineOrientation = (turbineOrientation + turbineVelocity) % 360;
     var rotateCss = 'rotate(' + turbineOrientation + 'deg)';
     rotor.css('-ms-transform', rotateCss);
     rotor.css('-webkit-transform', rotateCss);
     rotor.css('transform', rotateCss);
+
+    joules.text(floorTo(joulesGenerated, 1));
 
     window.requestAnimationFrame(render);
   }
@@ -242,6 +263,7 @@ $(function() {
   membersInc.click(function(event) { adjustMembers(1) });
   household.mouseenter(handleHouseholdIn);
   household.mouseout(handleHouseholdOut);
+  $(document).mousemove(handleBodyMouseMove);
   setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
 
   // Set initial slider value
