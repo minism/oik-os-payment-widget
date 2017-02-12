@@ -107,6 +107,7 @@ $(function() {
   var rotor = $('.wind-turbine-rotor');
   var joules = $('.joules');
   var overlay = $('.overlay');
+  var buyButton = $('#buy-button');
 
   // Basic app "model"
   var numMembers = 1;
@@ -240,6 +241,21 @@ $(function() {
     prevMouseY = event.clientY;
   };
 
+  var handleBuyButton = function() {
+    var width = 680;
+    var height = 680;
+    var top = (screen.height - height) / 2;
+    var left = (screen.width - width) / 2;
+    var params = 'scrollbars=1, resizable=no, width=' 
+        + width + ', height=' + height + ', top='
+        + top + ', left=' + left;
+    var url = 'https://leafo.itch.io/x-moon/purchase?popup=1'
+    var w = window.open(url, 'purchase', params);
+    if (typeof w.focus === "function") {
+      w.focus();
+    }
+  };
+
   // Per-frame rendering
   var render = function() {
     turbineVelocity = turbineVelocity * TURBINE_FALLOFF;
@@ -264,6 +280,7 @@ $(function() {
   membersInc.click(function(event) { adjustMembers(1) });
   household.mouseenter(handleHouseholdIn);
   household.mouseout(handleHouseholdOut);
+  $('.buy-link').click(handleBuyButton);
   $(document).mousemove(handleBodyMouseMove);
   setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
 
