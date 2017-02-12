@@ -1,6 +1,19 @@
 body {
   background-size: 100%;
   font-size: 20px;
+  margin: 0;
+  padding: 0;
+  height: 100%:
+  width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  opacity: 0.5;
+  z-index: -1;
 }
 
 .main {
