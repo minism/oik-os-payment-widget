@@ -145,12 +145,6 @@ body {
   height: 200px;
 }
 
-.windmill {
-  width: 100px;
-  height: 200px;
-  background: blue;
-}
-
 .wind-turbine {
   margin-top: 50px;
   height: 200px;
@@ -179,4 +173,18 @@ body {
   position: fixed;
   right: 0;
   bottom: 0;
+}
+
+.pluto-container {
+  position: relative;
+  width: 230px;
+  height: 250px;
+}
+
+.pluto-image {
+  position: absolute;
+  width: 100%;
+  -webkit-transition: opacity 0.75s ease-out;
+  -moz-transition: opacity 0.75s ease-out;
+  transition: opacity 0.75s ease-out;
 }
