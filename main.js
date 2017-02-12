@@ -106,6 +106,7 @@ $(function() {
   var body = $('body');
   var rotor = $('.wind-turbine-rotor');
   var joules = $('.joules');
+  var overlay = $('.overlay');
 
   // Basic app "model"
   var numMembers = 1;
@@ -250,6 +251,9 @@ $(function() {
     rotor.css('transform', rotateCss);
 
     joules.text(floorTo(turbineVelocity, 1));
+
+    var opacity = Math.max(0,  0.6 - turbineVelocity / 100);
+    overlay.css('opacity', opacity);
 
     window.requestAnimationFrame(render);
   }
