@@ -137,6 +137,9 @@ var Assets = function() {
   this.buyHover = new Audio('snd/buy-hover.mp3');
   this.donateClick = new Audio('snd/donate-click.mp3');
   this.donateHover = new Audio('snd/donate-hover.mp3');
+  this.household = new Audio('snd/household-hover.mp3');
+  this.membersUp = new Audio('snd/members-up.mp3');
+  this.membersDown = new Audio('snd/members-down.mp3');
 
   // Convo audio loops
   this.convoLoopDk = new Audio('snd/convo-loop-dk.mp3');
@@ -325,6 +328,11 @@ Controller.prototype.handleBodyMouseMove = function(event) {
 
 
 Controller.prototype.handleAdjustMembers = function(delta) {
+  if (delta > 0) {
+    this.assets.membersUp.play();
+  } else {
+    this.assets.membersDown.play();
+  }
   var newMembers = this.model.numMembers + delta;
   if (newMembers < MIN_MEMBERS || newMembers > MAX_MEMBERS) {
     return;
@@ -336,6 +344,7 @@ Controller.prototype.handleAdjustMembers = function(delta) {
 
 
 Controller.prototype.handleHouseholdIn = function(event) {
+  this.assets.household.play();
   event.target.innerText = 'ο ἶ κ ο ς';
   event.target.className = 'household oikos';
 };
