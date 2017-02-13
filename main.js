@@ -152,6 +152,12 @@ var Assets = function() {
   this.membersUp = new Audio('snd/members-up.mp3');
   this.membersDown = new Audio('snd/members-down.mp3');
 
+  // Wind
+  this.wind = new Audio('snd/wind-loop.mp3');
+  this.wind.loop = true;
+  this.wind.volume = 0;
+  this.wind.play();
+
   // Convo audio loops
   this.convoLoopDk = new Audio('snd/convo-loop-dk.mp3');
   this.convoLoopEury = new Audio('snd/convo-loop-eury.mp3');
@@ -298,6 +304,12 @@ Controller.prototype.update = function() {
   this.model.turbineVelocity = this.model.turbineVelocity * TURBINE_FALLOFF;
   this.model.joulesGenerated += this.model.turbineVelocity / 100;
   this.model.turbineOrientation = (this.model.turbineOrientation + this.model.turbineVelocity) % 360;
+
+  // Update wind sound based on speed
+  var windPower =
+    1.0 - (Math.max(OPACITY_MIN,  OPACITY_MAX - this.model.turbineVelocity / OPACITY_FALLOFF)) / OPACITY_MAX;
+  windPower += 0.1;
+  this.assets.wind.volume = windPower;
 
   this.view.render();
 
