@@ -165,7 +165,7 @@ var Assets = function() {
   this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
 
   // Piano samples
-  var numPianoSounds = 4;
+  var numPianoSounds = 12;
   this.pianoSounds = [];
   for (var i = 1; i < numPianoSounds + 1; i++) {
     var audio = new Audio('snd/lil-piano' + i + '.mp3');
