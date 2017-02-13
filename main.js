@@ -163,6 +163,15 @@ var Assets = function() {
   this.convoLoopEury = new Audio('snd/convo-loop-eury.mp3');
   this.convoLoopPluto = new Audio('snd/convo-loop-pluto.mp3');
   this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
+
+  // Piano samples
+  var numPianoSounds = 4;
+  this.pianoSounds = [];
+  for (var i = 1; i < numPianoSounds + 1; i++) {
+    var audio = new Audio('snd/lil-piano' + i + '.mp3');
+    this.pianoSounds.push(audio);
+  }
+  this.activePianoIndex = numPianoSounds;
 };
 
 
@@ -172,6 +181,17 @@ Assets.prototype.playMembers = function(num) {
   }
   this.activeMemberLoop = this.memberLoops[num-1];
   this.activeMemberLoop.volume = 1;
+}
+
+
+Assets.prototype.playPiano = function(delta) {
+  this.activePianoIndex += delta;
+  if (this.activePianoIndex >= this.pianoSounds.length) {
+    this.activePianoIndex = 0;
+  } else if (this.activePianoIndex < 0) {
+    this.activePianoIndex = this.pianoSounds.length - 1;
+  }
+  this.pianoSounds[this.activePianoIndex].play();
 }
 
 
@@ -187,6 +207,7 @@ var Model = function() {
   this.turbineOrientation = 0;
   this.turbineVelocity = 0;
   this.activeBucket = null;
+  this.lastIncome = null;
 };
 
 
@@ -319,6 +340,11 @@ Controller.prototype.update = function() {
 
 Controller.prototype.updateIncome = function() {
   var rawIncome = util.sliderToIncome(this.view.getIncome());
+  if (this.model.lastIncome !== null) {
+    var delta = rawIncome > this.model.lastIncome ? 1 : -1;
+    this.assets.playPiano(delta);
+  }
+  this.model.lastIncome = rawIncome;
   income = Math.floor(rawIncome);
   var bucket = util.getBucketForIncome(income);
   if (bucket != this.model.activeBucket) {
