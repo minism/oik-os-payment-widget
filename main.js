@@ -51,6 +51,9 @@ var BUCKETS = [
   },
 ];
 
+var OPACITY_MIN = 0;
+var OPACITY_MAX = 0.6;
+var OPACITY_FALLOFF = 100;
 var INITIAL_INCOME_SLIDER = 66;
 var CURVE_COEFFICIENT = 100;
 var CURVE_BASE = 1.1;
@@ -182,7 +185,7 @@ View.prototype.render = function() {
 
   this.joules.text(util.floorTo(this.model.turbineVelocity, 1));
 
-  var opacity = Math.max(0,  0.6 - this.model.turbineVelocity / 100);
+  var opacity = Math.max(OPACITY_MIN,  OPACITY_MAX - this.model.turbineVelocity / OPACITY_FALLOFF);
   this.overlay.css('opacity', opacity);
 };
 
