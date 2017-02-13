@@ -63,6 +63,10 @@ var TURBINE_FALLOFF = 0.98;
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 
+
+
+/** Pure functions */
+
 var util = {
   floorTo: function(value, resolution) {
     return Math.floor(value / resolution) * resolution;
@@ -101,6 +105,7 @@ var util = {
     return Math.round(income * bucket.percent / numMembers) / 100.0;
   },
 };
+
 
 
 /** Assets */
@@ -149,8 +154,6 @@ var View = function(model) {
   this.model = model;
 
   this.body = $('body');
-  this.bubbleLeft = $('.bubble-left');
-  this.bubbleRight = $('.bubble-right');
   this.buyButton = $('#buy-button');
   this.buyLink = $('.buy-link');
   this.household = $('.household');
@@ -232,7 +235,12 @@ var Controller = function(model, view, assets) {
   this.view.household.mouseout(this.handleHouseholdOut.bind(this));
   this.view.buyLink.click(this.handleBuyButton.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
-  // setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
+
+  // Create hover target controllers
+  new HoverController($('.convo-dk'), $('.bubble-left'));
+  new HoverController($('.convo-eury'), $('.bubble-right'));
+  new HoverController($('.convo-pluto'), $('.pluto-left'));
+  new HoverController($('.convo-ubu'), $('.pluto-right'));
 
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
@@ -334,6 +342,26 @@ Controller.prototype.handleBuyButton = function() {
 };
 
 
+/** HoverController */
+
+var HoverController = function(hoverTarget, bubbleTarget) {
+  this.hoverTarget = hoverTarget;
+  this.bubbleTarget = bubbleTarget;
+  this.hoverTarget.mouseenter(this.handleIn.bind(this));
+  this.hoverTarget.mouseout(this.handleOut.bind(this));
+};
+
+
+HoverController.prototype.handleIn = function() {
+  this.bubbleTarget.css('opacity', 1);
+};
+
+
+HoverController.prototype.handleOut = function() {
+  this.bubbleTarget.css('opacity', 0);
+};
+
+
 
 /** Init */
 
@@ -343,16 +371,5 @@ var Application = function() {
   this.view = new View(this.model);
   this.controller = new Controller(this.model, this.view, this.assets);
 }
-
-//   var updateConversation = function() {
-//     bubbleLeftActive = !bubbleLeftActive;
-//     if (bubbleLeftActive) {
-//       bubbleLeft.css('opacity', 1);
-//       bubbleRight.css('opacity', 0);
-//     } else {
-//       bubbleLeft.css('opacity', 0);
-//       bubbleRight.css('opacity', 1);
-//     }
-//   };
 
 $(function() { new Application() });

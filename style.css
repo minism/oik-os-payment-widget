@@ -119,19 +119,10 @@ body {
   position: relative;
 }
 
-.conversation-image {
-  position: absolute;
-  width: 100%;
-  -webkit-transition: opacity 0.75s ease-out;
-  -moz-transition: opacity 0.75s ease-out;
-  transition: opacity 0.75s ease-out;
-}
-
-.bubble-right {
-  opacity: 0;
-}
-
-.bubble-left {
+.bubble-left,
+.bubble-right,
+.pluto-left,
+.pluto-right {
   opacity: 0;
 }
 
@@ -193,10 +184,44 @@ body {
   height: 250px;
 }
 
-.pluto-image {
+.stacked-image {
   position: absolute;
   width: 100%;
   -webkit-transition: opacity 0.75s ease-out;
   -moz-transition: opacity 0.75s ease-out;
   transition: opacity 0.75s ease-out;
+}
+
+.hover-target {
+  position: absolute;
+  border: 1px solid red;
+  z-index: 2;
+}
+
+.convo-dk {
+  left: 160px;
+  bottom: 15px;
+  width: 60px;
+  height: 80px;
+}
+
+.convo-eury {
+  right: 168px;
+  bottom: 15px;
+  width: 60px;
+  height: 80px;
+}
+
+.convo-pluto {
+  left: 90px;
+  bottom: 15px;
+  width: 65px;
+  height: 100px;
+}
+
+.convo-ubu {
+  width: 35px;
+  height: 35px;
+  right: 25px;
+  bottom: 80px;
 }
