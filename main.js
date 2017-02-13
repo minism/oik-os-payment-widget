@@ -1,3 +1,5 @@
+/** Constants */
+
 var BUCKETS = [
   {
     income: 20000,
@@ -50,95 +52,37 @@ var BUCKETS = [
 ];
 
 var INITIAL_INCOME_SLIDER = 66;
-
 var CURVE_COEFFICIENT = 100;
 var CURVE_BASE = 1.1;
-
 var MIN_INCOME = 0;
 var MAX_INCOME = 1400000;
-
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
-
 var TURBINE_DAMPENING = 200.0;
 var TURBINE_FALLOFF = 0.98;
-
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
-
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 
-
-// Pre-process all audio and attach elements to the buckets.
-var audioLoops = [];
-for (var i = 0; i < BUCKETS.length; i++) {
-  var bucket = BUCKETS[i];
-  bucket.audioLoop = new Audio(bucket.loop);
-  bucket.audioLoop.loop = true;
-  bucket.audioLoop.volume = 0;
-  bucket.audioLoop.play();
-}
-var BUCKET_UP_AUDIO = new Audio('snd/bracket_up.mp3');
-var BUCKET_DOWN_AUDIO = new Audio('snd/bracket_down.mp3');
-
-
-// The currently active bucket, if any.
-var activeBucket = null;
-
-$(function() {
-  // Preload images immediately.
-  for (var i = 0; i < BUCKETS.length; i++) {
-    var image = new Image();
-    image.src = BUCKETS[i].background;
-  }
-
-  // Assign element references.
-  var input = $('.income');
-  var priceLabel = $('.price');
-  var incomeLabel = $('.income-label');
-  var ticketPriceLabel = $('.ticket-price');
-  var membersContainer = $('.members-container');
-  var membersDec = $('.members-dec');
-  var membersInc = $('.members-inc');
-  var bubbleLeft = $('.bubble-left');
-  var bubbleRight = $('.bubble-right');
-  var household = $('.household');
-  var oikos = $('.oikos');
-  var body = $('body');
-  var rotor = $('.wind-turbine-rotor');
-  var joules = $('.joules');
-  var overlay = $('.overlay');
-  var buyButton = $('#buy-button');
-
-  // Basic app "model"
-  var numMembers = 1;
-  var bubbleLeftActive = false;
-  var turbineVelocity = 0;
-  var turbineOrientation = 0;
-  var prevMouseX = null;
-  var prevMouseY = null;
-  var joulesGenerated = 0;
-
-  // Util functions.
-  var floorTo = function(value, resolution) {
+var util = {
+  floorTo: function(value, resolution) {
     return Math.floor(value / resolution) * resolution;
-  };
+  },
 
-  var addCommas = function(value) {
+  addCommas: function(value) {
     return value.toLocaleString();
-  }
+  },
 
-  // Control functions.
-  var sliderToIncome = function(sliderVal) {
+  sliderToIncome: function(sliderVal) {
     if (sliderVal <= 50) {
       return MIN_INCOME;
     } else if (sliderVal >= 100) {
       return MAX_INCOME;
     }
     var absIncome = Math.pow(CURVE_BASE, sliderVal) * CURVE_COEFFICIENT - 1;
-    return floorTo(absIncome, 1000);
-  };
+    return util.floorTo(absIncome, 1000);
+  },
 
-  var getBucketForIncome = function(income) {
+  getBucketForIncome: function(income) {
     targetBucket = null;
     for (var i = 0; i < BUCKETS.length; i++) {
       var bucket = BUCKETS[i];
@@ -148,145 +92,267 @@ $(function() {
       targetBucket = bucket;
     }
     return targetBucket;
-  };
+  },
 
-  var getAdjustedPrice = function(income, bucket) {
+  getAdjustedPrice: function(income, bucket, numMembers) {
     if (!bucket) {
       return 0;
     }
     return Math.round(income * bucket.percent / numMembers) / 100.0;
-  };
+  },
+};
 
-  var updateDisplay = function(income, price) {
-    ticketPriceLabel.text('$' + price);
-    priceLabel.text('$' + addCommas(price));
-    incomeLabel.text('$' + addCommas(income));
-  };
 
-  var setBucketActive = function(bucket) {
-    var incomeIncreased = true;
-    if (activeBucket) {
-      activeBucket.audioLoop.volume = 0;
-    }
-    if (bucket) {
-      if (activeBucket) {
-        incomeIncreased = bucket.income >= activeBucket.income;
-      }
-      bucket.audioLoop.volume = 1;
-      body.css('background-color', 'black');
-      body.css('background-image', "url(" + bucket.background + ")"); 
-    } else {
-      incomeIncreased = false;
-      body.css('background-color', 'white');
-      body.css('background-image', '');
-    }
-    activeBucket = bucket;
+/** Assets */
 
-    var bucketChangeAudio = incomeIncreased ? BUCKET_UP_AUDIO : BUCKET_DOWN_AUDIO;
-    bucketChangeAudio.play();
-  };
-
-  var adjustMembers = function(delta) {
-    var newMembers = numMembers + delta;
-    if (newMembers < MIN_MEMBERS || newMembers > MAX_MEMBERS) {
-      return;
-    }
-    numMembers = newMembers;
-    membersContainer.empty();
-    for (var i = 0; i < numMembers; i++) {
-      membersContainer.append($(MEMBER_IMAGE_HTML));
-    }
-    updateIncome();
-  };
-
-  var updateIncome = function() {
-    var rawIncome = sliderToIncome(input.val());
-    income = Math.floor(rawIncome);
-    var bucket = getBucketForIncome(income);
-    if (bucket != activeBucket) {
-      setBucketActive(bucket);
-    }
-    var price = getAdjustedPrice(income, bucket);
-    updateDisplay(rawIncome, price);
-  };
-
-  var updateConversation = function() {
-    bubbleLeftActive = !bubbleLeftActive;
-    if (bubbleLeftActive) {
-      bubbleLeft.css('opacity', 1);
-      bubbleRight.css('opacity', 0);
-    } else {
-      bubbleLeft.css('opacity', 0);
-      bubbleRight.css('opacity', 1);
-    }
-  };
-
-  var handleHouseholdIn = function(event) {
-    event.target.innerText = 'ο ἶ κ ο ς';
-    event.target.className = 'household oikos';
-  };
-
-  var handleHouseholdOut = function(event) {
-    event.target.innerText = 'household';
-    event.target.className = 'household';
-  };
-
-  var handleBodyMouseMove = function(event) {
-    if (prevMouseY && prevMouseX) {
-      var dx = Math.abs(prevMouseX - event.clientX);
-      var dy = Math.abs(prevMouseY - event.clientY);
-      turbineVelocity += (dx + dy) / TURBINE_DAMPENING;
-    }
-    prevMouseX = event.clientX;
-    prevMouseY = event.clientY;
-  };
-
-  var handleBuyButton = function() {
-    var width = 680;
-    var height = 680;
-    var top = (screen.height - height) / 2;
-    var left = (screen.width - width) / 2;
-    var params = 'scrollbars=1, resizable=no, width=' 
-        + width + ', height=' + height + ', top='
-        + top + ', left=' + left;
-    var url = 'https://leafo.itch.io/x-moon/purchase?popup=1'
-    var w = window.open(url, 'purchase', params);
-    if (typeof w.focus === "function") {
-      w.focus();
-    }
-  };
-
-  // Per-frame rendering
-  var render = function() {
-    turbineVelocity = turbineVelocity * TURBINE_FALLOFF;
-    joulesGenerated += turbineVelocity / 100;
-    turbineOrientation = (turbineOrientation + turbineVelocity) % 360;
-    var rotateCss = 'rotate(' + turbineOrientation + 'deg)';
-    rotor.css('-ms-transform', rotateCss);
-    rotor.css('-webkit-transform', rotateCss);
-    rotor.css('transform', rotateCss);
-
-    joules.text(floorTo(turbineVelocity, 1));
-
-    var opacity = Math.max(0,  0.6 - turbineVelocity / 100);
-    overlay.css('opacity', opacity);
-
-    window.requestAnimationFrame(render);
+var Assets = function() {
+  // Preload images immediately.
+  for (var i = 0; i < BUCKETS.length; i++) {
+    var image = new Image();
+    image.src = BUCKETS[i].background;
   }
 
-  // Setup events.
-  input.on('input', function(event) { updateIncome(); });
-  membersDec.click(function(event) { adjustMembers(-1) });
-  membersInc.click(function(event) { adjustMembers(1) });
-  household.mouseenter(handleHouseholdIn);
-  household.mouseout(handleHouseholdOut);
-  $('.buy-link').click(handleBuyButton);
-  $(document).mousemove(handleBodyMouseMove);
-  setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
+  // Pre-process all audio and attach elements to the buckets.
+  var audioLoops = [];
+  for (var i = 0; i < BUCKETS.length; i++) {
+    var bucket = BUCKETS[i];
+    bucket.audioLoop = new Audio(bucket.loop);
+    bucket.audioLoop.loop = true;
+    bucket.audioLoop.volume = 0;
+    bucket.audioLoop.play();
+  }
+
+  // Create audio references.
+  this.bucketUp = new Audio('snd/bracket_up.mp3');
+  this.bucketDown = new Audio('snd/bracket_down.mp3');
+};
+
+
+/** Model */
+
+var Model = function() {
+  this.bubbleLeftActive = false;
+  this.joulesGenerated = 0;
+  this.numMembers = 1;
+  this.prevMouseX = null;
+  this.prevMouseY = null;
+  this.turbineOrientation = 0;
+  this.turbineVelocity = 0;
+  this.activeBucket = null;
+};
+
+
+
+/** View */
+
+var View = function(model) {
+  this.model = model;
+
+  this.body = $('body');
+  this.bubbleLeft = $('.bubble-left');
+  this.bubbleRight = $('.bubble-right');
+  this.buyButton = $('#buy-button');
+  this.buyLink = $('.buy-link');
+  this.household = $('.household');
+  this.incomeLabel = $('.income-label');
+  this.input = $('.income');
+  this.joules = $('.joules');
+  this.membersContainer = $('.members-container');
+  this.membersDec = $('.members-dec');
+  this.membersInc = $('.members-inc');
+  this.oikos = $('.oikos');
+  this.overlay = $('.overlay');
+  this.priceLabel = $('.price');
+  this.rotor = $('.wind-turbine-rotor');
+  this.ticketPriceLabel = $('.ticket-price');
 
   // Set initial slider value
-  input.val(INITIAL_INCOME_SLIDER);
-  updateIncome();
+  this.input.val(INITIAL_INCOME_SLIDER);
+};
 
-  window.requestAnimationFrame(render);
-});
+
+View.prototype.render = function() {
+  var rotateCss = 'rotate(' + this.model.turbineOrientation + 'deg)';
+  this.rotor.css('-ms-transform', rotateCss);
+  this.rotor.css('-webkit-transform', rotateCss);
+  this.rotor.css('transform', rotateCss);
+
+  this.joules.text(util.floorTo(this.model.turbineVelocity, 1));
+
+  var opacity = Math.max(0,  0.6 - this.model.turbineVelocity / 100);
+  this.overlay.css('opacity', opacity);
+};
+
+
+View.prototype.displayBucket = function() {
+  var bucket = this.model.activeBucket;
+  if (bucket) {
+    this.body.css('background-color', 'black');
+    this.body.css('background-image', "url(" + bucket.background + ")"); 
+  } else {
+    this.body.css('background-color', 'white');
+    this.body.css('background-image', '');
+  }
+};
+
+
+View.prototype.displayMembers = function() {
+  this.membersContainer.empty();
+  for (var i = 0; i < this.model.numMembers; i++) {
+    this.membersContainer.append($(MEMBER_IMAGE_HTML));
+  }
+}
+
+
+View.prototype.displayIncomeAndPrice = function(income, price) {
+  this.ticketPriceLabel.text('$' + price);
+  this.priceLabel.text('$' + util.addCommas(price));
+  this.incomeLabel.text('$' + util.addCommas(income));
+};
+
+
+View.prototype.getIncome = function() {
+  return this.input.val();
+};
+
+
+
+/** Controller */
+
+var Controller = function(model, view, assets) {
+  this.model = model;
+  this.view = view;
+  this.assets = assets;
+
+  // Setup events.
+  this.view.input.on('input', this.updateIncome.bind(this));
+  this.view.membersDec.click(this.handleAdjustMembers.bind(this, -1));
+  this.view.membersInc.click(this.handleAdjustMembers.bind(this, 1));
+  this.view.household.mouseenter(this.handleHouseholdIn.bind(this));
+  this.view.household.mouseout(this.handleHouseholdOut.bind(this));
+  this.view.buyLink.click(this.handleBuyButton.bind(this));
+  $(document).mousemove(this.handleBodyMouseMove.bind(this));
+  // setInterval(updateConversation, CONVERSATION_BUBBLE_INTERVAL);
+
+  // Start update loop
+  window.requestAnimationFrame(this.update.bind(this));
+  this.updateIncome();
+};
+
+
+Controller.prototype.update = function() {
+  this.model.turbineVelocity = this.model.turbineVelocity * TURBINE_FALLOFF;
+  this.model.joulesGenerated += this.model.turbineVelocity / 100;
+  this.model.turbineOrientation = (this.model.turbineOrientation + this.model.turbineVelocity) % 360;
+
+  this.view.render();
+
+  window.requestAnimationFrame(this.update.bind(this));
+};
+
+
+Controller.prototype.updateIncome = function() {
+  var rawIncome = util.sliderToIncome(this.view.getIncome());
+  income = Math.floor(rawIncome);
+  var bucket = util.getBucketForIncome(income);
+  if (bucket != this.model.activeBucket) {
+    this.setBucketActive(bucket);
+  }
+  var price = util.getAdjustedPrice(income, bucket, this.model.numMembers);
+  this.view.displayIncomeAndPrice(rawIncome, price);
+};
+
+
+Controller.prototype.setBucketActive = function(bucket) {
+  var incomeIncreased = true;
+  if (this.model.activeBucket) {
+    this.model.activeBucket.audioLoop.volume = 0;
+  }
+  if (bucket) {
+    if (this.model.activeBucket) {
+      incomeIncreased = bucket.income >= this.model.activeBucket.income;
+    }
+    bucket.audioLoop.volume = 1;
+  } else {
+    incomeIncreased = false;
+  }
+  this.model.activeBucket = bucket;
+  this.view.displayBucket();
+
+  var bucketChangeAudio = incomeIncreased ? this.assets.bucketUp : this.assets.bucketDown;
+  bucketChangeAudio.play();
+};
+
+
+Controller.prototype.handleBodyMouseMove = function(event) {
+  if (this.model.prevMouseY && this.model.prevMouseX) {
+    var dx = Math.abs(this.model.prevMouseX - event.clientX);
+    var dy = Math.abs(this.model.prevMouseY - event.clientY);
+    this.model.turbineVelocity += (dx + dy) / TURBINE_DAMPENING;
+  }
+  this.model.prevMouseX = event.clientX;
+  this.model.prevMouseY = event.clientY;
+};
+
+
+Controller.prototype.handleAdjustMembers = function(delta) {
+  var newMembers = this.model.numMembers + delta;
+  if (newMembers < MIN_MEMBERS || newMembers > MAX_MEMBERS) {
+    return;
+  }
+  this.model.numMembers = newMembers;
+  this.view.displayMembers();
+  this.updateIncome();
+};
+
+
+Controller.prototype.handleHouseholdIn = function(event) {
+  event.target.innerText = 'ο ἶ κ ο ς';
+  event.target.className = 'household oikos';
+};
+
+
+Controller.prototype.handleHouseholdOut = function(event) {
+  event.target.innerText = 'household';
+  event.target.className = 'household';
+};
+
+
+Controller.prototype.handleBuyButton = function() {
+  var width = 680;
+  var height = 680;
+  var top = (screen.height - height) / 2;
+  var left = (screen.width - width) / 2;
+  var params = 'scrollbars=1, resizable=no, width=' 
+      + width + ', height=' + height + ', top='
+      + top + ', left=' + left;
+  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1'
+  var w = window.open(url, 'purchase', params);
+  if (typeof w.focus === "function") {
+    w.focus();
+  }
+};
+
+
+
+/** Init */
+
+var Application = function() {
+  this.assets = new Assets();
+  this.model = new Model();
+  this.view = new View(this.model);
+  this.controller = new Controller(this.model, this.view, this.assets);
+}
+
+//   var updateConversation = function() {
+//     bubbleLeftActive = !bubbleLeftActive;
+//     if (bubbleLeftActive) {
+//       bubbleLeft.css('opacity', 1);
+//       bubbleRight.css('opacity', 0);
+//     } else {
+//       bubbleLeft.css('opacity', 0);
+//       bubbleRight.css('opacity', 1);
+//     }
+//   };
+
+$(function() { new Application() });
