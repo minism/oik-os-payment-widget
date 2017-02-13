@@ -133,6 +133,10 @@ var Assets = function() {
   // Create audio references.
   this.bucketUp = new Audio('snd/bracket_up.mp3');
   this.bucketDown = new Audio('snd/bracket_down.mp3');
+  this.buyClick = new Audio('snd/buy-click.mp3');
+  this.buyHover = new Audio('snd/buy-hover.mp3');
+  this.donateClick = new Audio('snd/donate-click.mp3');
+  this.donateHover = new Audio('snd/donate-hover.mp3');
 };
 
 
@@ -158,6 +162,7 @@ var View = function(model) {
 
   this.body = $('body');
   this.buyButton = $('#buy-button');
+  this.donateButton = $('#donate-button');
   this.buyLink = $('.buy-link');
   this.household = $('.household');
   this.incomeLabel = $('.income-label');
@@ -238,6 +243,13 @@ var Controller = function(model, view, assets) {
   this.view.household.mouseout(this.handleHouseholdOut.bind(this));
   this.view.buyLink.click(this.handleBuyButton.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
+
+  // Setup sound-only events.
+  var self = this;
+  this.view.buyButton.mouseenter(function() { self.assets.buyHover.play() });
+  this.view.donateButton.mouseenter(function() { self.assets.donateHover.play() });
+  this.view.buyButton.click(function() { self.assets.buyClick.play() });
+  this.view.donateButton.click(function() { self.assets.donateClick.play() });
 
   // Create hover target controllers
   new HoverController($('.convo-dk'), $('.bubble-left'));
