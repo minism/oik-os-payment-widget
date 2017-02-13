@@ -137,6 +137,12 @@ var Assets = function() {
   this.buyHover = new Audio('snd/buy-hover.mp3');
   this.donateClick = new Audio('snd/donate-click.mp3');
   this.donateHover = new Audio('snd/donate-hover.mp3');
+
+  // Convo audio loops
+  this.convoLoopDk = new Audio('snd/convo-loop-dk.mp3');
+  this.convoLoopEury = new Audio('snd/convo-loop-eury.mp3');
+  this.convoLoopPluto = new Audio('snd/convo-loop-pluto.mp3');
+  this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
 };
 
 
@@ -252,10 +258,10 @@ var Controller = function(model, view, assets) {
   this.view.donateButton.click(function() { self.assets.donateClick.play() });
 
   // Create hover target controllers
-  new HoverController($('.convo-dk'), $('.bubble-left'));
-  new HoverController($('.convo-eury'), $('.bubble-right'));
-  new HoverController($('.convo-pluto'), $('.pluto-left'));
-  new HoverController($('.convo-ubu'), $('.pluto-right'));
+  new HoverController($('.convo-dk'), $('.bubble-left'), this.assets.convoLoopDk);
+  new HoverController($('.convo-eury'), $('.bubble-right'), this.assets.convoLoopEury);
+  new HoverController($('.convo-pluto'), $('.pluto-left'), this.assets.convoLoopPluto);
+  new HoverController($('.convo-ubu'), $('.pluto-right'), this.assets.convoLoopUbu);
 
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
@@ -359,9 +365,10 @@ Controller.prototype.handleBuyButton = function() {
 
 /** HoverController */
 
-var HoverController = function(hoverTarget, bubbleTarget) {
+var HoverController = function(hoverTarget, bubbleTarget, audioLoop) {
   this.hoverTarget = hoverTarget;
   this.bubbleTarget = bubbleTarget;
+  this.audioLoop = audioLoop;
   this.hoverTarget.mouseenter(this.handleIn.bind(this));
   this.hoverTarget.mouseout(this.handleOut.bind(this));
 };
@@ -369,6 +376,7 @@ var HoverController = function(hoverTarget, bubbleTarget) {
 
 HoverController.prototype.handleIn = function() {
   this.bubbleTarget.css('opacity', 1);
+  this.audioLoop.play();
 };
 
 
