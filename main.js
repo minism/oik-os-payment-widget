@@ -130,6 +130,17 @@ var Assets = function() {
     bucket.audioLoop.play();
   }
 
+  // Member tuplet loops
+  this.memberLoops = [];
+  this.activeMemberLoop = null;
+  for (var i = 1; i < 9; i++) {
+    var audio = new Audio('snd/tuplet-' + i + '.mp3');
+    audio.loop = true;
+    audio.volume = 0;
+    audio.play();
+    this.memberLoops.push(audio);
+  }
+
   // Create audio references.
   this.bucketUp = new Audio('snd/bracket_up.mp3');
   this.bucketDown = new Audio('snd/bracket_down.mp3');
@@ -147,6 +158,16 @@ var Assets = function() {
   this.convoLoopPluto = new Audio('snd/convo-loop-pluto.mp3');
   this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
 };
+
+
+Assets.prototype.playMembers = function(num) {
+  if (this.activeMemberLoop) {
+    this.activeMemberLoop.volume = 0;
+  }
+  this.activeMemberLoop = this.memberLoops[num-1];
+  this.activeMemberLoop.volume = 1;
+}
+
 
 
 /** Model */
@@ -269,6 +290,7 @@ var Controller = function(model, view, assets) {
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
   this.updateIncome();
+  this.assets.playMembers(this.model.numMembers);
 };
 
 
@@ -337,6 +359,7 @@ Controller.prototype.handleAdjustMembers = function(delta) {
   if (newMembers < MIN_MEMBERS || newMembers > MAX_MEMBERS) {
     return;
   }
+  this.assets.playMembers(newMembers);
   this.model.numMembers = newMembers;
   this.view.displayMembers();
   this.updateIncome();
