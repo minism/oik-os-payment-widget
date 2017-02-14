@@ -48,17 +48,20 @@ body {
   margin-bottom: 24px;
 }
 
-.income {
-  width: 300px;
+.income-container {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
 }
 
-.price {
-  font-size: 40px;
-  font-weight: bold;
+.income {
+  width: 280px;
+  margin-right: 20px;
 }
 
 .income-label {
-  font-size: 40px;
+  width: 100px;
+  font-size: 32px;
   font-weight: bold;
 }
 
