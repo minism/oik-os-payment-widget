@@ -151,6 +151,7 @@ var Assets = function() {
   this.membersDown = new Audio('snd/members-down.mp3');
   this.household = util.makeLoop(new Audio('snd/household-hover.mp3'));
   this.wind = util.makeLoop(new Audio('snd/wind-loop.mp3'));
+  this.secondCounter = new Audio('snd/second-counter.mp3');
 
   // Convo audio loops
   this.convoLoopDk = util.makeLoop(new Audio('snd/convo-loop-dk.mp3'));
@@ -206,6 +207,8 @@ Assets.prototype.playPiano = function(delta) {
 /** Model */
 
 var Model = function() {
+  this.income = null;
+  this.moneyEarned = 0;
   this.bubbleLeftActive = false;
   this.joulesGenerated = 0;
   this.numMembers = 1;
@@ -214,7 +217,6 @@ var Model = function() {
   this.turbineOrientation = 0;
   this.turbineVelocity = 0;
   this.activeBucket = null;
-  this.lastIncome = null;
   this.lastWork = 0;
   this.granularity = 1;
 };
@@ -243,6 +245,7 @@ var View = function(model) {
   this.rotor = $('.wind-turbine-rotor');
   this.ticketPriceLabel = $('.ticket-price');
   this.granularity = $('#granularity');
+  this.moneyEarned = $('.money-earned');
 
   // Set initial slider value
   this.input.val(INITIAL_INCOME_SLIDER);
@@ -293,6 +296,11 @@ View.prototype.displayIncomeAndPrice = function(income, price) {
 };
 
 
+View.prototype.displayMoneyEarned = function() {
+  this.moneyEarned.text(this.model.moneyEarned.toFixed(2));
+};
+
+
 View.prototype.getIncome = function() {
   return this.input.val();
 };
@@ -331,6 +339,7 @@ var Controller = function(model, view, assets) {
 
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
+  window.setInterval(this.updateMoneyCounter.bind(this), 1000);
   this.updateIncome();
   this.assets.playMembers(this.model.numMembers);
 };
@@ -359,18 +368,28 @@ Controller.prototype.update = function() {
 
 Controller.prototype.updateIncome = function() {
   var rawIncome = util.sliderToIncome(this.view.getIncome());
-  if (this.model.lastIncome !== null) {
-    var delta = rawIncome > this.model.lastIncome ? 1 : -1;
+  if (this.model.income !== null) {
+    var delta = rawIncome > this.model.income ? 1 : -1;
     this.assets.playPiano(delta);
   }
-  this.model.lastIncome = rawIncome;
-  income = Math.floor(rawIncome);
-  var bucket = util.getBucketForIncome(income);
+  this.model.income = Math.floor(rawIncome);
+  var bucket = util.getBucketForIncome(this.model.income);
   if (bucket != this.model.activeBucket) {
     this.setBucketActive(bucket);
   }
-  var price = util.getAdjustedPrice(income, bucket, this.model.numMembers);
-  this.view.displayIncomeAndPrice(income / this.model.granularity, price);
+  var price = util.getAdjustedPrice(this.model.income, bucket, this.model.numMembers);
+  this.view.displayIncomeAndPrice(this.model.income / this.model.granularity, price);
+};
+
+
+Controller.prototype.updateMoneyCounter = function() {
+  var moneyEarned =
+      this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
+  if (this.model.moneyEarned.toFixed(2) != moneyEarned.toFixed(2)) {
+    this.assets.secondCounter.play();
+  }
+  this.model.moneyEarned = moneyEarned;
+  this.view.displayMoneyEarned();
 };
 
 
