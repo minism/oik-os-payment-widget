@@ -57,7 +57,14 @@
         <img src="img/ticket.jpg" class="line">
         <div class="ticket-price">$0</div>
       </div>
-      <div class="household-container line">To buy a download ticket </br> to <i>Oikospiel Book I</i>, for Mac & PC </br></br> Please enter your estimated annual <span class="household">household</span><span class="household-after">income:</span></div>
+      <div class="household-container line">To buy a download ticket </br> to <i>Oikospiel Book I</i>, for Mac & PC </br></br> Please enter your estimated
+        <select id="granularity">
+          <option value="annual">Annual</option>
+          <option value="daily">Daily</option>
+          <option value="hourly">Hourly</option>
+          <option value="secondly">Secondly</option>
+        </select>
+        <span class="household">household</span><span class="household-after">income:</span></div>
       <div class="income-container line">
         <input type="range" class="income" step="any" value=0 min=50 max=100>
         <div class="income-label">$0</div>

@@ -216,6 +216,7 @@ var Model = function() {
   this.activeBucket = null;
   this.lastIncome = null;
   this.lastWork = 0;
+  this.granularity = 1;
 };
 
 
@@ -241,6 +242,7 @@ var View = function(model) {
   this.priceLabel = $('.price');
   this.rotor = $('.wind-turbine-rotor');
   this.ticketPriceLabel = $('.ticket-price');
+  this.granularity = $('#granularity');
 
   // Set initial slider value
   this.input.val(INITIAL_INCOME_SLIDER);
@@ -282,6 +284,9 @@ View.prototype.displayMembers = function() {
 
 
 View.prototype.displayIncomeAndPrice = function(income, price) {
+  if (income % 1 != 0) {
+    income = income.toFixed(2);
+  }
   this.ticketPriceLabel.text('$' + price);
   this.priceLabel.text('$' + util.addCommas(price));
   this.incomeLabel.text('$' + util.addCommas(income));
@@ -308,6 +313,7 @@ var Controller = function(model, view, assets) {
   this.view.household.mouseenter(this.handleHouseholdIn.bind(this));
   this.view.household.mouseout(this.handleHouseholdOut.bind(this));
   this.view.buyLink.click(this.handleBuyButton.bind(this));
+  this.view.granularity.change(this.handleChangeGranularity.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
 
   // Setup sound-only events.
@@ -364,7 +370,7 @@ Controller.prototype.updateIncome = function() {
     this.setBucketActive(bucket);
   }
   var price = util.getAdjustedPrice(income, bucket, this.model.numMembers);
-  this.view.displayIncomeAndPrice(rawIncome, price);
+  this.view.displayIncomeAndPrice(income / this.model.granularity, price);
 };
 
 
@@ -447,6 +453,28 @@ Controller.prototype.handleBuyButton = function() {
     w.focus();
   }
 };
+
+
+Controller.prototype.handleChangeGranularity = function(event) {
+  switch (event.target.value) {
+    case 'annual':
+      this.model.granularity = 1;
+      break;
+    case 'daily':
+      this.model.granularity = 2080 / 8;
+      break;
+    case 'hourly':
+      this.model.granularity = 2080;
+      break;
+    case 'secondly':
+      this.model.granularity = 2080 * 60 * 60;
+      break;
+    default:
+      break;
+  }
+  this.updateIncome();
+};
+
 
 
 /** HoverController */
