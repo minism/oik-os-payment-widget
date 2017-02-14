@@ -107,6 +107,13 @@ var util = {
     }
     return Math.round(income * bucket.percent / numMembers) / 100.0;
   },
+
+  makeLoop: function(audio) {
+    audio.loop = true;
+    audio.volume = 0;
+    audio.play();
+    return audio;
+  }
 };
 
 
@@ -124,10 +131,7 @@ var Assets = function() {
   var audioLoops = [];
   for (var i = 0; i < BUCKETS.length; i++) {
     var bucket = BUCKETS[i];
-    bucket.audioLoop = new Audio(bucket.loop);
-    bucket.audioLoop.loop = true;
-    bucket.audioLoop.volume = 0;
-    bucket.audioLoop.play();
+    bucket.audioLoop = util.makeLoop(new Audio(bucket.loop));
   }
 
   // Member tuplet loops
@@ -145,32 +149,22 @@ var Assets = function() {
   this.buyHover = new Audio('snd/buy-hover.mp3');
   this.donateClick = new Audio('snd/donate-click.mp3');
   this.donateHover = new Audio('snd/donate-hover.mp3');
-  this.household = new Audio('snd/household-hover.mp3');
   this.membersUp = new Audio('snd/members-up.mp3');
   this.membersDown = new Audio('snd/members-down.mp3');
-
-  // Wind
-  this.wind = new Audio('snd/wind-loop.mp3');
-  this.wind.loop = true;
-  this.wind.volume = 0;
-  this.wind.play();
+  this.household = util.makeLoop(new Audio('snd/household-hover.mp3'));
+  this.wind = util.makeLoop(new Audio('snd/wind-loop.mp3'));
 
   // Convo audio loops
-  this.convoLoopDk = new Audio('snd/convo-loop-dk.mp3');
-  this.convoLoopEury = new Audio('snd/convo-loop-eury.mp3');
-  this.convoLoopPluto = new Audio('snd/convo-loop-pluto.mp3');
-  this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
+  this.convoLoopDk = util.makeLoop(new Audio('snd/convo-loop-dk.mp3'));
+  this.convoLoopEury = util.makeLoop(new Audio('snd/convo-loop-eury.mp3'));
+  this.convoLoopPluto = util.makeLoop(new Audio('snd/convo-loop-pluto.mp3'));
+  this.convoLoopUbu = util.makeLoop(new Audio('snd/convo-loop-ubu.mp3'));
   var convoLoops = [
     this.convoLoopDk,
     this.convoLoopEury,
     this.convoLoopPluto,
     this.convoLoopUbu,
   ];
-  for (var i = 0; i < convoLoops.length; i++) {
-    convoLoops[i].loop = true;
-    convoLoops[i].volume = 0;
-    convoLoops[i].play();
-  }
 
   // Piano samples
   var numPianoSounds = 12;
@@ -183,10 +177,20 @@ var Assets = function() {
 };
 
 
+Assets.prototype.playHousehold = function() {
+  this.household.volume = 1;
+};
+
+
+Assets.prototype.stopHousehold = function() {
+  this.household.volume = 0;
+};
+
+
 Assets.prototype.playMembers = function(num) {
   this.activeMemberLoop = this.memberLoops[num-1];
   this.activeMemberLoop.play();
-}
+};
 
 
 Assets.prototype.playPiano = function(delta) {
@@ -197,7 +201,7 @@ Assets.prototype.playPiano = function(delta) {
     this.activePianoIndex = this.pianoSounds.length - 1;
   }
   this.pianoSounds[this.activePianoIndex].play();
-}
+};
 
 
 
@@ -417,13 +421,14 @@ Controller.prototype.handleAdjustMembers = function(delta) {
 
 
 Controller.prototype.handleHouseholdIn = function(event) {
-  this.assets.household.play();
+  this.assets.playHousehold();
   event.target.innerText = 'ο ἶ κ ο ς';
   event.target.className = 'household oikos';
 };
 
 
 Controller.prototype.handleHouseholdOut = function(event) {
+  this.assets.stopHousehold();
   event.target.innerText = 'household';
   event.target.className = 'household';
 };
