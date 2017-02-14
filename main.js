@@ -259,6 +259,7 @@ Assets.prototype.playPiano = function(delta) {
 
 var Model = function() {
   this.income = null;
+  this.price = null;
   this.moneyEarned = 0;
   this.bubbleLeftActive = false;
   this.joulesGenerated = 0;
@@ -456,6 +457,7 @@ Controller.prototype.updateIncome = function() {
     this.setBucketActive(bucket);
   }
   var price = util.getAdjustedPrice(this.model.income, bucket, this.model.numMembers);
+  this.model.price = price;
   this.view.displayIncomeAndPrice(this.model.income / this.model.granularity, price);
 };
 
@@ -545,7 +547,7 @@ Controller.prototype.handleBuyButton = function() {
   var params = 'scrollbars=1, resizable=no, width=' 
       + width + ', height=' + height + ', top='
       + top + ', left=' + left;
-  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1'
+  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + this.model.price * 100;
   var w = window.open(url, 'purchase', params);
   if (typeof w.focus === "function") {
     w.focus();
