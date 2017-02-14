@@ -345,7 +345,6 @@ Controller.prototype.update = function() {
   // Update wind sound based on speed
   var windPower =
     1.0 - (Math.max(OPACITY_MIN,  OPACITY_MAX - this.model.turbineVelocity / OPACITY_FALLOFF)) / OPACITY_MAX;
-  windPower += 0.1;
   this.assets.wind.volume = windPower;
 
   this.view.render();
