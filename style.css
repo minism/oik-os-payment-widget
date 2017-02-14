@@ -48,6 +48,10 @@ body {
   margin-bottom: 24px;
 }
 
+.container > .line2 {
+  margin-bottom: 48px;
+}
+
 .income-container {
   display: -ms-flexbox;
   display: -webkit-flex;
