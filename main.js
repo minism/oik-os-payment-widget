@@ -160,6 +160,17 @@ var Assets = function() {
   this.convoLoopEury = new Audio('snd/convo-loop-eury.mp3');
   this.convoLoopPluto = new Audio('snd/convo-loop-pluto.mp3');
   this.convoLoopUbu = new Audio('snd/convo-loop-ubu.mp3');
+  var convoLoops = [
+    this.convoLoopDk,
+    this.convoLoopEury,
+    this.convoLoopPluto,
+    this.convoLoopUbu,
+  ];
+  for (var i = 0; i < convoLoops.length; i++) {
+    convoLoops[i].loop = true;
+    convoLoops[i].volume = 0;
+    convoLoops[i].play();
+  }
 
   // Piano samples
   var numPianoSounds = 12;
@@ -303,10 +314,12 @@ var Controller = function(model, view, assets) {
   this.view.donateButton.click(function() { self.assets.donateClick.play() });
 
   // Create hover target controllers
-  new HoverController($('.convo-dk'), $('.bubble-left'), this.assets.convoLoopDk);
-  new HoverController($('.convo-eury'), $('.bubble-right'), this.assets.convoLoopEury);
-  new HoverController($('.convo-pluto'), $('.pluto-left'), this.assets.convoLoopPluto);
-  new HoverController($('.convo-ubu'), $('.pluto-right'), this.assets.convoLoopUbu);
+  this.hoverControllers = [
+    new HoverController($('.convo-dk'), $('.bubble-left'), this.assets.convoLoopDk),
+    new HoverController($('.convo-eury'), $('.bubble-right'), this.assets.convoLoopEury),
+    new HoverController($('.convo-pluto'), $('.pluto-left'), this.assets.convoLoopPluto),
+    new HoverController($('.convo-ubu'), $('.pluto-right'), this.assets.convoLoopUbu),
+  ];
 
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
@@ -319,6 +332,11 @@ Controller.prototype.update = function() {
   this.model.turbineVelocity = this.model.turbineVelocity * TURBINE_FALLOFF;
   this.model.joulesGenerated += this.model.turbineVelocity / 100;
   this.model.turbineOrientation = (this.model.turbineOrientation + this.model.turbineVelocity) % 360;
+
+  // Update hover controllers
+  for (var i = 0; i < this.hoverControllers.length; i++) {
+    this.hoverControllers[i].update();
+  }
 
   // Update wind sound based on speed
   var windPower =
@@ -448,6 +466,11 @@ HoverController.prototype.handleOut = function() {
   this.bubbleTarget.css('opacity', 0);
 };
 
+
+HoverController.prototype.update = function() {
+  var value = this.bubbleTarget.css('opacity');
+  this.audioLoop.volume = value;
+}
 
 
 /** Init */
