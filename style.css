@@ -151,9 +151,9 @@ body {
 .wind-turbine {
   margin-top: 50px;
   height: 200px;
-  width: 100px;
+  width: 50px;
   background-image: url('img/wind-pole.png');
-  background-size: 100px 200px;
+  background-size: 50px 200px;
   position: relative;
 }
 
@@ -161,8 +161,8 @@ body {
   position: absolute;
   height: 125px;
   width: 125px;
-  top: -40px;
-  left: -10px;
+  top: -42px;
+  left: -36px;
   background-image: url('img/wind-rotor.png');
   background-size: 125px 125px;
 }
