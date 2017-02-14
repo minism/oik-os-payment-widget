@@ -135,9 +135,6 @@ var Assets = function() {
   this.activeMemberLoop = null;
   for (var i = 1; i < 9; i++) {
     var audio = new Audio('snd/tuplet-' + i + '.mp3');
-    audio.loop = true;
-    audio.volume = 0;
-    audio.play();
     this.memberLoops.push(audio);
   }
 
@@ -176,11 +173,8 @@ var Assets = function() {
 
 
 Assets.prototype.playMembers = function(num) {
-  if (this.activeMemberLoop) {
-    this.activeMemberLoop.volume = 0;
-  }
   this.activeMemberLoop = this.memberLoops[num-1];
-  this.activeMemberLoop.volume = 1;
+  this.activeMemberLoop.play();
 }
 
 
