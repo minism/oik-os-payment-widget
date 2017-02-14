@@ -51,6 +51,21 @@ var BUCKETS = [
   },
 ];
 
+var MONTH_NAMES = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
+
 var OPACITY_MIN = 0;
 var OPACITY_MAX = 0.6;
 var OPACITY_FALLOFF = 100;
@@ -106,6 +121,11 @@ var util = {
       return 0;
     }
     return Math.round(income * bucket.percent / numMembers) / 100.0;
+  },
+
+  zeroPad: function(num) {
+    if (num < 10) { return "0" + num}
+    return num.toString();
   },
 };
 
@@ -278,8 +298,19 @@ var View = function(model) {
   this.granularity = $('#granularity');
   this.moneyEarned = $('.money-earned');
 
+  this.ticket = {
+    year: $('.ticket-year'),
+    month: $('.ticket-month'),
+    day: $('.ticket-day'),
+    date: $('.ticket-date'),
+    time: $('.ticket-time'),
+  };
+
   // Set initial slider value
   this.input.val(INITIAL_INCOME_SLIDER);
+
+  // Set initial ticket date
+  this.displayDate();
 };
 
 
@@ -332,6 +363,22 @@ View.prototype.displayMoneyEarned = function() {
 };
 
 
+View.prototype.displayDate = function() {
+  var now = new Date();
+  this.ticket.day.text(now.getDay());
+  this.ticket.month.text(MONTH_NAMES[now.getMonth()]);
+  this.ticket.year.text(now.getFullYear());
+  this.ticket.date.text(
+      (now.getMonth() + 1) + '/' +
+      now.getDate() + '/' +
+      now.getFullYear().toString().substr(2));
+  this.ticket.time.text(
+      util.zeroPad(now.getHours()) + ':' +
+      util.zeroPad(now.getMinutes()) + ':' +
+      util.zeroPad(now.getSeconds()));
+};
+
+
 View.prototype.getIncome = function() {
   return this.input.val();
 };
@@ -370,7 +417,7 @@ var Controller = function(model, view, assets) {
 
   // Start update loop
   window.requestAnimationFrame(this.update.bind(this));
-  window.setInterval(this.updateMoneyCounter.bind(this), 1000);
+  window.setInterval(this.updateSeconds.bind(this), 1000);
   this.updateIncome();
   this.assets.playMembers(this.model.numMembers);
 };
@@ -413,7 +460,8 @@ Controller.prototype.updateIncome = function() {
 };
 
 
-Controller.prototype.updateMoneyCounter = function() {
+Controller.prototype.updateSeconds = function() {
+  this.view.displayDate();
   var moneyEarned =
       this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
   if (this.model.moneyEarned.toFixed(2) != moneyEarned.toFixed(2)) {
