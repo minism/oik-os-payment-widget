@@ -215,6 +215,7 @@ var Model = function() {
   this.turbineVelocity = 0;
   this.activeBucket = null;
   this.lastIncome = null;
+  this.lastWork = 0;
 };
 
 
@@ -231,6 +232,7 @@ var View = function(model) {
   this.incomeLabel = $('.income-label');
   this.input = $('.income');
   this.joules = $('.joules');
+  this.watts = $('.watts');
   this.membersContainer = $('.members-container');
   this.membersDec = $('.members-dec');
   this.membersInc = $('.members-inc');
@@ -251,7 +253,8 @@ View.prototype.render = function() {
   this.rotor.css('-webkit-transform', rotateCss);
   this.rotor.css('transform', rotateCss);
 
-  this.joules.text(util.floorTo(this.model.turbineVelocity, 1));
+  this.joules.text(util.floorTo(this.model.lastWork, 1));
+  this.watts.text(util.floorTo(this.model.turbineVelocity, 1));
 
   var opacity = Math.max(OPACITY_MIN,  OPACITY_MAX - this.model.turbineVelocity / OPACITY_FALLOFF);
   this.overlay.css('opacity', opacity);
@@ -390,7 +393,9 @@ Controller.prototype.handleBodyMouseMove = function(event) {
   if (this.model.prevMouseY && this.model.prevMouseX) {
     var dx = Math.abs(this.model.prevMouseX - event.clientX);
     var dy = Math.abs(this.model.prevMouseY - event.clientY);
-    this.model.turbineVelocity += (dx + dy) / TURBINE_DAMPENING;
+    var workGenerated = (dx + dy) / TURBINE_DAMPENING;
+    this.model.lastWork = workGenerated * 100;
+    this.model.turbineVelocity += workGenerated;
   }
   this.model.prevMouseX = event.clientX;
   this.model.prevMouseY = event.clientY;
