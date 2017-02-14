@@ -107,13 +107,44 @@ var util = {
     }
     return Math.round(income * bucket.percent / numMembers) / 100.0;
   },
+};
 
-  makeLoop: function(audio) {
-    audio.loop = true;
-    audio.volume = 0;
-    audio.play();
-    return audio;
+
+
+/** Better sound class */
+
+var Sound = function(file, loop) {
+  this.audio = new Audio(file);
+  this.audio.load();
+  if (loop) {
+    this.loop = this.audio.loop = true;
+    this.audio.volume = 0;
+    this.audio.play();
   }
+};
+
+
+Sound.prototype.play = function() {
+  if (this.loop) {
+    this.audio.volume = 1;
+  } else {
+    this.audio.currentTime = 0;
+    this.audio.play();
+  }
+};
+
+
+Sound.prototype.mute = function() {
+  if (this.loop) {
+    this.audio.volume = 0;
+  } else {
+    this.audio.pause();
+  }
+};
+
+
+Sound.prototype.setVolume = function(volume) {
+  this.audio.volume = volume;
 };
 
 
@@ -131,33 +162,33 @@ var Assets = function() {
   var audioLoops = [];
   for (var i = 0; i < BUCKETS.length; i++) {
     var bucket = BUCKETS[i];
-    bucket.audioLoop = util.makeLoop(new Audio(bucket.loop));
+    bucket.audioLoop = new Sound(bucket.loop, true);
   }
 
   // Member tuplet loops
   this.memberLoops = [];
   this.activeMemberLoop = null;
   for (var i = 1; i < 9; i++) {
-    var audio = new Audio('snd/tuplet-' + i + '.mp3');
+    var audio = new Sound('snd/tuplet-' + i + '.mp3');
     this.memberLoops.push(audio);
   }
 
   // Create audio references.
-  this.bucketUp = new Audio('snd/bracket_up.mp3');
-  this.bucketDown = new Audio('snd/bracket_down.mp3');
-  this.buyClick = new Audio('snd/buy-click.mp3');
-  this.buyHover = new Audio('snd/buy-hover.mp3');
-  this.membersUp = new Audio('snd/members-up.mp3');
-  this.membersDown = new Audio('snd/members-down.mp3');
-  this.household = util.makeLoop(new Audio('snd/household-hover.mp3'));
-  this.wind = util.makeLoop(new Audio('snd/wind-loop.mp3'));
-  this.secondCounter = new Audio('snd/second-counter.mp3');
+  this.bucketUp = new Sound('snd/bracket_up.mp3');
+  this.bucketDown = new Sound('snd/bracket_down.mp3');
+  this.buyClick = new Sound('snd/buy-click.mp3');
+  this.buyHover = new Sound('snd/buy-hover.mp3');
+  this.membersUp = new Sound('snd/members-up.mp3');
+  this.membersDown = new Sound('snd/members-down.mp3');
+  this.household = new Sound('snd/household-hover.mp3', true);
+  this.wind = new Sound('snd/wind-loop.mp3', true);
+  this.secondCounter = new Sound('snd/second-counter.mp3');
 
   // Convo audio loops
-  this.convoLoopDk = util.makeLoop(new Audio('snd/convo-loop-dk.mp3'));
-  this.convoLoopEury = util.makeLoop(new Audio('snd/convo-loop-eury.mp3'));
-  this.convoLoopPluto = util.makeLoop(new Audio('snd/convo-loop-pluto.mp3'));
-  this.convoLoopUbu = util.makeLoop(new Audio('snd/convo-loop-ubu.mp3'));
+  this.convoLoopDk = new Sound('snd/convo-loop-dk.mp3', true);
+  this.convoLoopEury = new Sound('snd/convo-loop-eury.mp3', true);
+  this.convoLoopPluto = new Sound('snd/convo-loop-pluto.mp3', true);
+  this.convoLoopUbu = new Sound('snd/convo-loop-ubu.mp3', true);
   var convoLoops = [
     this.convoLoopDk,
     this.convoLoopEury,
@@ -169,7 +200,7 @@ var Assets = function() {
   var numPianoSounds = 12;
   this.pianoSounds = [];
   for (var i = 1; i < numPianoSounds + 1; i++) {
-    var audio = new Audio('snd/lil-piano' + i + '.mp3');
+    var audio = new Sound('snd/lil-piano' + i + '.mp3');
     this.pianoSounds.push(audio);
   }
   this.activePianoIndex = numPianoSounds;
@@ -177,12 +208,12 @@ var Assets = function() {
 
 
 Assets.prototype.playHousehold = function() {
-  this.household.volume = 1;
+  this.household.play();
 };
 
 
 Assets.prototype.stopHousehold = function() {
-  this.household.volume = 0;
+  this.household.mute();
 };
 
 
@@ -358,7 +389,7 @@ Controller.prototype.update = function() {
   // Update wind sound based on speed
   var windPower =
     1.0 - (Math.max(OPACITY_MIN,  OPACITY_MAX - this.model.turbineVelocity / OPACITY_FALLOFF)) / OPACITY_MAX;
-  this.assets.wind.volume = windPower;
+  this.assets.wind.setVolume(windPower);
 
   this.view.render();
 
@@ -396,13 +427,13 @@ Controller.prototype.updateMoneyCounter = function() {
 Controller.prototype.setBucketActive = function(bucket) {
   var incomeIncreased = true;
   if (this.model.activeBucket) {
-    this.model.activeBucket.audioLoop.volume = 0;
+    this.model.activeBucket.audioLoop.mute();
   }
   if (bucket) {
     if (this.model.activeBucket) {
       incomeIncreased = bucket.income >= this.model.activeBucket.income;
     }
-    bucket.audioLoop.volume = 1;
+    bucket.audioLoop.play();
   } else {
     incomeIncreased = false;
   }
@@ -520,7 +551,7 @@ HoverController.prototype.handleOut = function() {
 
 HoverController.prototype.update = function() {
   var value = this.bubbleTarget.css('opacity');
-  this.audioLoop.volume = value;
+  this.audioLoop.setVolume(value);
 }
 
 
