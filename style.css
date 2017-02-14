@@ -88,14 +88,6 @@ body {
   z-index: 1;
 }
 
-.ticket-price-large {
-  left: 73%;
-  top: 50%;
-  font-size: 22px;
-  color: black;
-  font-weight: bold;
-}
-
 .members button {
   width: 30px;
   height: 30px;
@@ -228,4 +220,8 @@ body {
   height: 35px;
   right: 25px;
   bottom: 80px;
+}
+
+.price {
+  font-weight: bold;
 }
