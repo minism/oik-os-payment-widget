@@ -39,9 +39,9 @@ body {
 }
 
 .container {
-  -webkit-flex: 4;
-  -ms-flex: 4;
-  flex: 4;
+  -webkit-flex: 3;
+  -ms-flex: 3;
+  flex: 3;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
@@ -54,7 +54,7 @@ body {
 }
 
 .top.container {
-  margin-right: 20px;
+  margin-right: 60px;
 }
 
 .side-container {
@@ -85,9 +85,8 @@ body {
 }
 
 .nav-link {
-  -webkit-flex: auto;
-  -ms-flex: auto;
-  flex: auto;
+  display: block;
+  text-align: center;
 }
 
 .nav-element {
@@ -97,18 +96,11 @@ body {
 }
 
 .nav-container {
-  -webkit-flex: 2;
-  -ms-flex: 2;
-  flex: 2;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  -ms-flex-direction: column;
-  -webkit-flex-direction: column;
-  flex-direction: column;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
+  padding-top: 3em;
+  -webkit-flex: 4;
+  -ms-flex: 4;
+  flex: 4;
+  text-align: center;
 }
 
 .full-width {
@@ -385,4 +377,8 @@ body {
 
 .laurel-image {
   width: 100%;
+}
+
+.footer-image {
+  width: 150%;
 }
