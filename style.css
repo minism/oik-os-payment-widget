@@ -1,6 +1,6 @@
 body {
   background-size: 100%;
-  font-size: 18px;
+  font-size: 20px;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -103,7 +103,7 @@ body {
 }
 
 .income {
-  width: 280px;
+  width: 300px;
   margin-right: 20px;
 }
 
@@ -127,7 +127,6 @@ body {
 }
 
 .ticket-element {
-  /*border: 1px solid red;*/
   text-align: left;
   color: black;
   font-family: "Courier";
