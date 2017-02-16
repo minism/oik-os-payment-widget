@@ -329,3 +329,17 @@ body {
 .wp {
   margin-top: -10px;
 }
+
+.money-earned-container {
+  position: relative;
+}
+
+.dollar {
+  color: green;
+  font-weight: bold;
+  font-size: 22px;
+  position: absolute;
+  left: 85px;
+  top: 0;
+  opacity: 1;
+}

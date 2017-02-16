@@ -76,10 +76,11 @@ var MIN_INCOME = 0;
 var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
-var TURBINE_DAMPENING = 200.0;
+var TURBINE_DAMPENING = 250.0;
 var TURBINE_FALLOFF = 0.97;
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
+var DOLLAR_HTML = '<div class="dollar">$</div>';
 
 
 
@@ -309,6 +310,7 @@ var View = function(model) {
   this.ticketPriceLabel = $('.ticket-price');
   this.granularity = $('#granularity');
   this.moneyEarned = $('.money-earned');
+  this.moneyEarnedContainer = $('.money-earned-container');
 
   this.ticket = {
     year: $('.ticket-year'),
@@ -378,6 +380,18 @@ View.prototype.displayPrice = function() {
 
 View.prototype.displayMoneyEarned = function() {
   this.moneyEarned.text(this.model.moneyEarned.toFixed(2));
+};
+
+
+View.prototype.generateDollar = function() {
+  var el = $(DOLLAR_HTML);
+  this.moneyEarnedContainer.append(el);
+  el.animate({
+    opacity: 0,
+    top: -50,
+  }, 2000, function() {
+    el.remove();
+  });
 };
 
 
@@ -491,6 +505,7 @@ Controller.prototype.updateSeconds = function() {
       this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
   if (this.model.moneyEarned.toFixed(2) != moneyEarned.toFixed(2)) {
     this.assets.secondCounter.play();
+    this.view.generateDollar();
   }
   this.model.moneyEarned = moneyEarned;
   this.view.displayMoneyEarned();
