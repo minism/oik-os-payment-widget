@@ -501,10 +501,10 @@ Controller.prototype.updateIncome = function() {
 
 
 Controller.prototype.updateSeconds = function() {
+  this.view.displayDate();
   if (this.model.lastWork < 1) {
     return;
   }
-  this.view.displayDate();
   var moneyEarned =
       this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
   if (this.model.moneyEarned.toFixed(2) != moneyEarned.toFixed(2)) {
