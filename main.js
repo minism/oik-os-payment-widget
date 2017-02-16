@@ -611,7 +611,7 @@ Controller.prototype.handleBuyButton = function() {
   var params = 'scrollbars=1, resizable=no, width=' 
       + width + ', height=' + height + ', top='
       + top + ', left=' + left;
-  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + Math.floor(this.model.computedPrice() * 100);
+  var url = 'https://dkoikos.itch.io/oikospiel/purchase?popup=1&price=' + Math.floor(this.model.computedPrice() * 100);
   var w = window.open(url, 'purchase', params);
   if (typeof w.focus === "function") {
     w.focus();
