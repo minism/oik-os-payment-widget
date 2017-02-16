@@ -87,6 +87,12 @@ body {
 .nav-link {
   display: block;
   text-align: center;
+  text-decoration: none;
+  color: rgb(0, 60, 128);
+}
+
+.nav-link:hover {
+  color: rgb(0, 90, 180);
 }
 
 .nav-element {
