@@ -419,6 +419,7 @@ var Controller = function(model, view, assets) {
   this.view.buyLink.click(this.handleBuyButton.bind(this));
   this.view.granularity.change(this.handleChangeGranularity.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
+  this.mouseMoveTimeout = null;
 
   // Setup sound-only events.
   var self = this;
@@ -519,6 +520,9 @@ Controller.prototype.setBucketActive = function(bucket) {
 
 
 Controller.prototype.handleBodyMouseMove = function(event) {
+  if (this.mouseMoveTimeout) {
+    window.clearTimeout(this.mouseMoveTimeout);
+  }
   if (this.model.prevMouseY && this.model.prevMouseX) {
     var dx = Math.abs(this.model.prevMouseX - event.clientX);
     var dy = Math.abs(this.model.prevMouseY - event.clientY);
@@ -528,6 +532,12 @@ Controller.prototype.handleBodyMouseMove = function(event) {
   }
   this.model.prevMouseX = event.clientX;
   this.model.prevMouseY = event.clientY;
+
+  var model = this.model;
+  var view = this.view;
+  this.mouseMoveTimeout = window.setTimeout(function() {
+    model.lastWork = 0
+  }, 100);
 };
 
 
