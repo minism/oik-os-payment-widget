@@ -1,6 +1,6 @@
 body {
   background-size: 100%;
-  font-size: 20px;
+  font-size: 18px;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -27,7 +27,7 @@ body {
 }
 
 .main {
-  width: 1000px;
+  width: 1200px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -39,16 +39,49 @@ body {
 }
 
 .container {
+  -webkit-flex: 4;
+  -ms-flex: 4;
+  flex: 4;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.top.container {
+  margin-right: 20px;
+}
+
+.side-container {
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
   flex-direction: column;
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
+}
+
+.nav-link {
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
+}
+
+.expand {
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
 }
 
 .full-width {
@@ -169,6 +202,7 @@ body {
   height: 350px;
   width: 500px;
   position: relative;
+  margin-top: -40px;
 }
 
 .bubble-left,
@@ -198,7 +232,12 @@ body {
 
 .title-image {
   height: 200px;
-  margin-bottom: -25px;
+  margin-top: -15px;
+  margin-bottom: -35px;
+}
+
+.footer-image {
+  width: 175px;
 }
 
 .wind-turbine {
@@ -282,4 +321,12 @@ body {
 
 .price {
   font-weight: bold;
+}
+
+.counter-container {
+  width: 75%;
+}
+
+.wp {
+  margin-top: -10px;
 }
