@@ -77,7 +77,7 @@ var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 var TURBINE_DAMPENING = 200.0;
-var TURBINE_FALLOFF = 0.98;
+var TURBINE_FALLOFF = 0.97;
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 
@@ -227,6 +227,11 @@ var Assets = function() {
 };
 
 
+Assets.prototype.getImages = function() {
+  return $('img');
+}
+
+
 Assets.prototype.playHousehold = function() {
   this.household.play();
 };
@@ -271,6 +276,12 @@ var Model = function() {
   this.activeBucket = null;
   this.lastWork = 0;
   this.granularity = 1;
+};
+
+
+Model.prototype.computedPrice = function() {
+  var computedPrice = this.price - this.moneyEarned;
+  return Math.max(0, Math.round(computedPrice * 100) / 100);
 };
 
 
@@ -349,14 +360,20 @@ View.prototype.displayMembers = function() {
 }
 
 
-View.prototype.displayIncomeAndPrice = function(income, price) {
-  if (income % 1 != 0) {
-    income = income.toFixed(2);
+View.prototype.displayIncomeAndPrice = function() {
+  var displayedIncome = this.model.income / this.model.granularity;
+  if (displayedIncome % 1 != 0) {
+    displayedIncome = displayedIncome.toFixed(2);
   }
-  this.ticketPriceLabel.text('$' + price);
-  this.priceLabel.text('$' + util.addCommas(price));
-  this.incomeLabel.text('$' + util.addCommas(income));
+  this.incomeLabel.text('$' + util.addCommas(displayedIncome));
+  this.displayPrice();
 };
+
+
+View.prototype.displayPrice = function() {
+  this.ticketPriceLabel.text('$' + this.model.computedPrice());
+  this.priceLabel.text('$' + util.addCommas(this.model.computedPrice()));
+}
 
 
 View.prototype.displayMoneyEarned = function() {
@@ -402,6 +419,7 @@ var Controller = function(model, view, assets) {
   this.view.buyLink.click(this.handleBuyButton.bind(this));
   this.view.granularity.change(this.handleChangeGranularity.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
+  this.mouseMoveTimeout = null;
 
   // Setup sound-only events.
   var self = this;
@@ -458,11 +476,16 @@ Controller.prototype.updateIncome = function() {
   }
   var price = util.getAdjustedPrice(this.model.income, bucket, this.model.numMembers);
   this.model.price = price;
-  this.view.displayIncomeAndPrice(this.model.income / this.model.granularity, price);
+  this.model.moneyEarned = 0;
+  this.view.displayMoneyEarned();
+  this.view.displayIncomeAndPrice();
 };
 
 
 Controller.prototype.updateSeconds = function() {
+  if (this.model.turbineVelocity < 1) {
+    return;
+  }
   this.view.displayDate();
   var moneyEarned =
       this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
@@ -471,6 +494,7 @@ Controller.prototype.updateSeconds = function() {
   }
   this.model.moneyEarned = moneyEarned;
   this.view.displayMoneyEarned();
+  this.view.displayPrice();
 };
 
 
@@ -496,6 +520,9 @@ Controller.prototype.setBucketActive = function(bucket) {
 
 
 Controller.prototype.handleBodyMouseMove = function(event) {
+  if (this.mouseMoveTimeout) {
+    window.clearTimeout(this.mouseMoveTimeout);
+  }
   if (this.model.prevMouseY && this.model.prevMouseX) {
     var dx = Math.abs(this.model.prevMouseX - event.clientX);
     var dy = Math.abs(this.model.prevMouseY - event.clientY);
@@ -505,6 +532,12 @@ Controller.prototype.handleBodyMouseMove = function(event) {
   }
   this.model.prevMouseX = event.clientX;
   this.model.prevMouseY = event.clientY;
+
+  var model = this.model;
+  var view = this.view;
+  this.mouseMoveTimeout = window.setTimeout(function() {
+    model.lastWork = 0
+  }, 100);
 };
 
 
@@ -547,7 +580,7 @@ Controller.prototype.handleBuyButton = function() {
   var params = 'scrollbars=1, resizable=no, width=' 
       + width + ', height=' + height + ', top='
       + top + ', left=' + left;
-  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + this.model.price * 100;
+  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + Math.floor(this.model.computedPrice() * 100);
   var w = window.open(url, 'purchase', params);
   if (typeof w.focus === "function") {
     w.focus();
@@ -602,16 +635,63 @@ HoverController.prototype.handleOut = function() {
 HoverController.prototype.update = function() {
   var value = this.bubbleTarget.css('opacity');
   this.audioLoop.setVolume(value);
-}
+};
+
+
+
+/** LoadingController */
+
+var LoadingController = function(assets) {
+  this.assets = assets;
+  this.images = this.assets.getImages();
+  this.loadingOverlay = $('.loading-overlay');
+  this.loaded = false;
+  this.onLoadCallback = null;
+  setTimeout(this.checkLoaded.bind(this), 10);
+};
+
+
+LoadingController.prototype.onLoad = function(callback) {
+  if (this.loaded) {
+    callback();
+  } else {
+    this.onLoadCallback = callback;
+  }
+};
+
+
+LoadingController.prototype.checkLoaded = function() {
+  var allComplete = true;
+  for (var i =0; i < this.images.length; i++) {
+    var image = this.images[i];
+    if (!image.complete) {
+      allComplete = false;
+      break;
+    }
+  }
+  if (allComplete) {
+    this.loadingOverlay.remove();
+    this.loaded = true;
+    if (this.onLoadCallback) {
+      this.onLoadCallback();
+      this.onLoadCallback = null;
+    }
+  } else {
+    setTimeout(this.checkLoaded.bind(this), 10);
+  }
+};
 
 
 /** Init */
 
 var Application = function() {
-  this.assets = new Assets();
-  this.model = new Model();
-  this.view = new View(this.model);
-  this.controller = new Controller(this.model, this.view, this.assets);
+  var assets = new Assets();
+  var loadingController = new LoadingController(assets);
+  loadingController.onLoad(function() {
+    var model = new Model();
+    var view = new View(model);
+    var controller = new Controller(model, view, assets);
+  });
 }
 
 $(function() { new Application() });

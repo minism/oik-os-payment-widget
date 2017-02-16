@@ -9,13 +9,14 @@
   <title></title>
 </head>
 <body>
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
-  <script type="text/javascript" src="main.js"></script>
 
   <div class="overlay"></div>
+  <div class="overlay loading-overlay">
+    <div class="loading-label">loading...</div>
+  </div>
 
   <div class="main horiz-container">
-    <div class="container">
+    <div class="top container">
       <div class="conversation-container">
         <div class="hover-target convo-dk"></div>
         <div class="hover-target convo-eury"></div>
@@ -24,12 +25,12 @@
         <img class="stacked-image" src="img/money-tree-bottom.png">
       </div>
       <img class="title-image" src="img/title-header.png">
-      <div class="horiz-container full-width">
+      <div class="horiz-container counter-container">
         <div class="container">
           <div class="wind-turbine">
             <div class="wind-turbine-rotor"></div>
           </div>
-          <div>
+          <div class="wp">
             <span>Work = </span><span class="joules">0</span><span> joules</span>
           </div>
           <div>
@@ -51,7 +52,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="top container">
       <div class="line"></div>
       <div class="household-container line">To buy a download ticket </br> to <i>Oikospiel Book I</i>, for Mac &amp; PC </br></br> Please enter your estimated
         <select id="granularity">
@@ -74,6 +75,7 @@
         </div>
       </div>
       <div class="line2">(This income information will not be saved.)</div>
+      <div class="line"></div>
       <div class="ticket-container">
         <img src="img/ticket2.jpg" class="line">
         <div class="ticket-element ticket-price">$0</div>
@@ -89,14 +91,28 @@
         <div class="ticket-element ticket-date"></div>
         <div class="ticket-element ticket-time"></div>
       </div>
+      <div class="line"></div>
       <div class="price-label line">Your ticket price is: <span class="price"></span></div>
       <div class="horiz-container line">
         <a><img class="buy-link" id="buy-button" src="img/buy-it-now.png"></a>
       </div>
-      <img src="img/oikopera-footer.png">
+    </div>
+
+    <div class="side-container">
+      <div class="expand"></div>
+      <a class="nav-link">trailers</a>
+      <a class="nav-link">screenshots</a>
+      <a class="nav-link">OST cycle</a>
+      <a class="nav-link">Libretto</a>
+      <a class="nav-link">presskit</a>
+      <div class="expand"></div>
+      <img class="footer-image" src="img/oikopera-footer.png">
+      <div class="expand"></div>
     </div>
   </div>
   <img src="img/rabbit.png" class="rabbit">
-</script>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.js"></script>
+  <script type="text/javascript" src="main.js"></script>
 </body>
 </html>
