@@ -227,6 +227,11 @@ var Assets = function() {
 };
 
 
+Assets.prototype.getImages = function() {
+  return $('img');
+}
+
+
 Assets.prototype.playHousehold = function() {
   this.household.play();
 };
@@ -602,16 +607,63 @@ HoverController.prototype.handleOut = function() {
 HoverController.prototype.update = function() {
   var value = this.bubbleTarget.css('opacity');
   this.audioLoop.setVolume(value);
-}
+};
+
+
+
+/** LoadingController */
+
+var LoadingController = function(assets) {
+  this.assets = assets;
+  this.images = this.assets.getImages();
+  this.loadingOverlay = $('.loading-overlay');
+  this.loaded = false;
+  this.onLoadCallback = null;
+  setTimeout(this.checkLoaded.bind(this), 10);
+};
+
+
+LoadingController.prototype.onLoad = function(callback) {
+  if (this.loaded) {
+    callback();
+  } else {
+    this.onLoadCallback = callback;
+  }
+};
+
+
+LoadingController.prototype.checkLoaded = function() {
+  var allComplete = true;
+  for (var i =0; i < this.images.length; i++) {
+    var image = this.images[i];
+    if (!image.complete) {
+      allComplete = false;
+      break;
+    }
+  }
+  if (allComplete) {
+    this.loadingOverlay.remove();
+    this.loaded = true;
+    if (this.onLoadCallback) {
+      this.onLoadCallback();
+      this.onLoadCallback = null;
+    }
+  } else {
+    setTimeout(this.checkLoaded.bind(this), 10);
+  }
+};
 
 
 /** Init */
 
 var Application = function() {
-  this.assets = new Assets();
-  this.model = new Model();
-  this.view = new View(this.model);
-  this.controller = new Controller(this.model, this.view, this.assets);
+  var assets = new Assets();
+  var loadingController = new LoadingController(assets);
+  loadingController.onLoad(function() {
+    var model = new Model();
+    var view = new View(model);
+    var controller = new Controller(model, view, assets);
+  });
 }
 
 $(function() { new Application() });

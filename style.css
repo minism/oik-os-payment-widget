@@ -15,6 +15,17 @@ body {
   z-index: -1;
 }
 
+.loading-overlay {
+  z-index: 10;
+}
+
+.loading-label {
+  font-size: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
 .main {
   width: 1000px;
   margin-left: auto;
