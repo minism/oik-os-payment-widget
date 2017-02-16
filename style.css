@@ -361,6 +361,10 @@ body {
   margin-top: -10px;
 }
 
+.padjust {
+  width: 150px;
+}
+
 .money-earned-container {
   position: relative;
 }
