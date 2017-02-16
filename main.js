@@ -311,6 +311,8 @@ var View = function(model) {
   this.granularity = $('#granularity');
   this.moneyEarned = $('.money-earned');
   this.moneyEarnedContainer = $('.money-earned-container');
+  this.titleImage = $('img.title-image');
+  this.titleImageTarget = $('.title-image-target');
 
   this.ticket = {
     year: $('.ticket-year'),
@@ -430,6 +432,8 @@ var Controller = function(model, view, assets) {
   this.view.membersInc.click(this.handleAdjustMembers.bind(this, 1));
   this.view.household.mouseenter(this.handleHouseholdIn.bind(this));
   this.view.household.mouseout(this.handleHouseholdOut.bind(this));
+  this.view.titleImageTarget.mouseenter(this.handleTitleImageTargetIn.bind(this));
+  this.view.titleImageTarget.mouseout(this.handleTitleImageTargetOut.bind(this));
   this.view.buyLink.click(this.handleBuyButton.bind(this));
   this.view.granularity.change(this.handleChangeGranularity.bind(this));
   $(document).mousemove(this.handleBodyMouseMove.bind(this));
@@ -584,6 +588,18 @@ Controller.prototype.handleHouseholdOut = function(event) {
   this.assets.stopHousehold();
   event.target.innerText = 'household';
   event.target.className = 'household';
+};
+
+
+Controller.prototype.handleTitleImageTargetIn = function(event) {
+  this.view.titleImage.attr('src', 'img/title-header-works.png');
+  this.assets.playHousehold();
+};
+
+
+Controller.prototype.handleTitleImageTargetOut = function(event) {
+  this.view.titleImage.attr('src', 'img/title-header.png');
+  this.assets.stopHousehold();
 };
 
 
