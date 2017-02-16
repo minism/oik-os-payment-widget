@@ -399,7 +399,7 @@ View.prototype.generateDollar = function() {
 
 View.prototype.displayDate = function() {
   var now = new Date();
-  this.ticket.day.text(now.getDay());
+  this.ticket.day.text(now.getDate());
   this.ticket.month.text(MONTH_NAMES[now.getMonth()]);
   this.ticket.year.text(now.getFullYear());
   this.ticket.date.text(
