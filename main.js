@@ -77,7 +77,7 @@ var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 var TURBINE_DAMPENING = 200.0;
-var TURBINE_FALLOFF = 0.98;
+var TURBINE_FALLOFF = 0.97;
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 
@@ -279,6 +279,12 @@ var Model = function() {
 };
 
 
+Model.prototype.computedPrice = function() {
+  var computedPrice = this.price - this.moneyEarned;
+  return Math.max(0, Math.round(computedPrice * 100) / 100);
+};
+
+
 
 /** View */
 
@@ -354,14 +360,20 @@ View.prototype.displayMembers = function() {
 }
 
 
-View.prototype.displayIncomeAndPrice = function(income, price) {
-  if (income % 1 != 0) {
-    income = income.toFixed(2);
+View.prototype.displayIncomeAndPrice = function() {
+  var displayedIncome = this.model.income / this.model.granularity;
+  if (displayedIncome % 1 != 0) {
+    displayedIncome = displayedIncome.toFixed(2);
   }
-  this.ticketPriceLabel.text('$' + price);
-  this.priceLabel.text('$' + util.addCommas(price));
-  this.incomeLabel.text('$' + util.addCommas(income));
+  this.incomeLabel.text('$' + util.addCommas(displayedIncome));
+  this.displayPrice();
 };
+
+
+View.prototype.displayPrice = function() {
+  this.ticketPriceLabel.text('$' + this.model.computedPrice());
+  this.priceLabel.text('$' + util.addCommas(this.model.computedPrice()));
+}
 
 
 View.prototype.displayMoneyEarned = function() {
@@ -463,11 +475,16 @@ Controller.prototype.updateIncome = function() {
   }
   var price = util.getAdjustedPrice(this.model.income, bucket, this.model.numMembers);
   this.model.price = price;
-  this.view.displayIncomeAndPrice(this.model.income / this.model.granularity, price);
+  this.model.moneyEarned = 0;
+  this.view.displayMoneyEarned();
+  this.view.displayIncomeAndPrice();
 };
 
 
 Controller.prototype.updateSeconds = function() {
+  if (this.model.turbineVelocity < 1) {
+    return;
+  }
   this.view.displayDate();
   var moneyEarned =
       this.model.moneyEarned + this.model.income / (2080 * 60 * 60);
@@ -476,6 +493,7 @@ Controller.prototype.updateSeconds = function() {
   }
   this.model.moneyEarned = moneyEarned;
   this.view.displayMoneyEarned();
+  this.view.displayPrice();
 };
 
 
@@ -552,7 +570,7 @@ Controller.prototype.handleBuyButton = function() {
   var params = 'scrollbars=1, resizable=no, width=' 
       + width + ', height=' + height + ', top='
       + top + ', left=' + left;
-  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + this.model.price * 100;
+  var url = 'https://leafo.itch.io/x-moon/purchase?popup=1&price=' + Math.floor(this.model.computedPrice() * 100);
   var w = window.open(url, 'purchase', params);
   if (typeof w.focus === "function") {
     w.focus();
