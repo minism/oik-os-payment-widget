@@ -77,7 +77,7 @@ var MAX_INCOME = 1400000;
 var MIN_MEMBERS = 1;
 var MAX_MEMBERS = 8;
 var TURBINE_DAMPENING = 250.0;
-var TURBINE_FALLOFF = 0.97;
+var TURBINE_FALLOFF = 0.98;
 var CONVERSATION_BUBBLE_INTERVAL = 4000;
 var MEMBER_IMAGE_HTML = '<img src="img/dogface.png">';
 var DOLLAR_HTML = '<div class="dollar">$</div>';
@@ -501,7 +501,7 @@ Controller.prototype.updateIncome = function() {
 
 
 Controller.prototype.updateSeconds = function() {
-  if (this.model.turbineVelocity < 1) {
+  if (this.model.lastWork < 1) {
     return;
   }
   this.view.displayDate();
